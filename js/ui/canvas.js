@@ -2,6 +2,73 @@
   let dragging = false, resizing = false, editing = false;
   let target = null, handle = null;
   let sx, sy, sl, st, sw, sh, ox, oy;
+  let snapEnabled = true;
+  const SNAP_THRESHOLD = 6;
+
+  function getSnapPoints(cw, ch, excludeId) {
+    const pts = { x: [0, cw, cw / 2], y: [0, ch, ch / 2] }
+    const els = slide()?.elements || []
+    for (const o of els) {
+      if (o.id === excludeId) continue
+      pts.x.push(o.x, o.x + o.width, o.x + o.width / 2)
+      pts.y.push(o.y, o.y + o.height, o.y + o.height / 2)
+    }
+    return pts
+  }
+
+  function computeSnap(nx, ny, w, h, cw, ch, excludeId) {
+    const pts = getSnapPoints(cw, ch, excludeId)
+    const myX = [nx, nx + w, nx + w / 2]
+    const myY = [ny, ny + h, ny + h / 2]
+    let dx = 0, dy = 0, gx = null, gy = null
+    for (const mx of myX) {
+      for (const px of pts.x) {
+        const d = px - mx
+        if (Math.abs(d) < SNAP_THRESHOLD && (!dx || Math.abs(d) < Math.abs(dx))) {
+          dx = d; gx = px
+        }
+      }
+    }
+    for (const my of myY) {
+      for (const py of pts.y) {
+        const d = py - my
+        if (Math.abs(d) < SNAP_THRESHOLD && (!dy || Math.abs(d) < Math.abs(dy))) {
+          dy = d; gy = py
+        }
+      }
+    }
+    return { dx, dy, gx, gy }
+  }
+
+  let guideContainer = null
+
+  function ensureGuides(canvas) {
+    if (!guideContainer) {
+      guideContainer = document.createElement('div')
+      guideContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999'
+      canvas.appendChild(guideContainer)
+    }
+    return guideContainer
+  }
+
+  function showGuides(canvas, gx, gy) {
+    const c = ensureGuides(canvas)
+    c.innerHTML = ''
+    if (gx != null) {
+      const l = document.createElement('div')
+      l.style.cssText = `position:absolute;top:0;left:${gx}px;width:1px;height:100%;background:#ff4444;opacity:0.85`
+      c.appendChild(l)
+    }
+    if (gy != null) {
+      const l = document.createElement('div')
+      l.style.cssText = `position:absolute;top:${gy}px;left:0;width:100%;height:1px;background:#ff4444;opacity:0.85`
+      c.appendChild(l)
+    }
+  }
+
+  function clearGuides() {
+    if (guideContainer) guideContainer.innerHTML = ''
+  }
 
   function onDown(e) {
     if (editing) return;
@@ -83,8 +150,16 @@
     if (dragging) {
       let nx = e.clientX - cr.left - ox;
       let ny = e.clientY - cr.top - oy;
-      nx = Math.max(0, Math.min(nx, canvas.offsetWidth - target.offsetWidth));
-      ny = Math.max(0, Math.min(ny, canvas.offsetHeight - target.offsetHeight));
+      const tw = target.offsetWidth, th = target.offsetHeight
+      if (snapEnabled) {
+        const snap = computeSnap(nx, ny, tw, th, canvas.offsetWidth, canvas.offsetHeight, target.dataset.id)
+        nx += snap.dx; ny += snap.dy
+        showGuides(canvas, snap.gx, snap.gy)
+      } else {
+        clearGuides()
+      }
+      nx = Math.max(0, Math.min(nx, canvas.offsetWidth - tw));
+      ny = Math.max(0, Math.min(ny, canvas.offsetHeight - th));
       target.style.left = nx + 'px';
       target.style.top = ny + 'px';
     }
@@ -133,6 +208,7 @@
     resizing = false;
     target = null;
     handle = null;
+    clearGuides();
   }
 
   function onTextBlur(e) {
@@ -250,6 +326,7 @@
   }
 
   window.hideEditorCtx = hideEditorCtx;
+  window.setSnapEnabled = (v) => { snapEnabled = v }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

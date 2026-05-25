@@ -210,6 +210,7 @@ async function saveSettings() {
   settingsCache = s;
   ThemeManager.setTheme(s.theme);
   I18n.setLocale(s.language || 'tr');
+  if (window.setSnapEnabled) window.setSnapEnabled(s.snapToGrid !== false)
   closeSettings();
 }
 
@@ -259,6 +260,7 @@ function init() {
     if (window.electronAPI) {
       const cfg = await window.electronAPI.getConfig();
       I18n.init(cfg.settings?.language || 'tr');
+      if (window.setSnapEnabled) window.setSnapEnabled(cfg.settings?.snapToGrid !== false)
     } else {
       I18n.init('tr');
     }
