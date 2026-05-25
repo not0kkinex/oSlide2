@@ -7,9 +7,9 @@ function moveSlide(from, to) { if (from === to) return; save(); const [s] = App.
 function addEl(type, props) {
   save(); const s = slide(); if (!s) return;
   const el = { id: id(), type, x: 120, y: 80, width: 200, height: 60, ...EL_DEFAULTS[type] || {}, ...props };
-  if (type === 'title') el.content = 'Başlık';
-  else if (type === 'text') el.content = 'Metin';
-  else if (type === 'image') el.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#eee" width="400" height="300"/><text fill="#999" font-size="20" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">Resim</text></svg>');
+  if (type === 'title' && !el.content) el.content = 'Başlık';
+  if (type === 'text' && !el.content) el.content = 'Metin';
+  if (type === 'image' && !el.src) el.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#eee" width="400" height="300"/><text fill="#999" font-size="20" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">Resim</text></svg>');
   s.elements.push(el); App.sel = el.id;
   renderSlide(); renderThumbs(); showPanel(el); updateToolbar();
 }
