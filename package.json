@@ -13,5 +13,8 @@
   "type": "commonjs",
   "devDependencies": {
     "electron": "^42.2.0"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.8"
   }
 }

@@ -9,7 +9,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #000;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', Arial, sans-serif;
 }
 
 #pres {
