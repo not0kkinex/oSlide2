@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file:; img-src 'self' data: file:;">
+  <title>oSlide2</title>
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="topbar-left">
+        <span class="logo">oSlide2</span>
+        <span class="version">v1.0</span>
+      </div>
+      <div class="topbar-right">
+        <button id="settings-btn" title="Ayarlar"><i data-lucide="settings"></i></button>
+      </div>
+    </header>
+
+    <main id="content">
+      <div id="welcome" class="hidden">
+        <div class="welcome-icon"><i data-lucide="presentation"></i></div>
+        <h1>oSlide2'ye Hoş Geldiniz</h1>
+        <p>Yeni bir sunum oluşturun veya mevcut projeyi açın.</p>
+        <button id="welcome-new-btn" class="btn-primary"><i data-lucide="plus"></i> Yeni Proje</button>
+        <button id="welcome-open-btn" class="btn-secondary"><i data-lucide="folder-open"></i> Dosyadan Aç</button>
+      </div>
+
+      <div id="main-view">
+        <div id="top-actions">
+          <button id="new-project-btn" class="btn-primary"><i data-lucide="plus"></i> Yeni Proje</button>
+          <button id="open-file-btn" class="btn-secondary"><i data-lucide="folder-open"></i> Dosyadan Aç</button>
+          <div id="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="search-input" placeholder="Proje ara..." />
+          </div>
+        </div>
+
+        <div id="projects-section">
+          <h2 class="section-title">Projeler</h2>
+          <div id="projects-grid"></div>
+        </div>
+
+        <div id="recent-section" class="hidden">
+          <h2 class="section-title">Son Kullanılanlar</h2>
+          <div id="recent-list"></div>
+        </div>
+      </div>
+    </main>
+
+    <div id="dialog-overlay" class="hidden">
+      <div id="dialog">
+        <div class="dialog-head">
+          <span id="dialog-title">Yeni Proje</span>
+          <button id="dialog-close"><i data-lucide="x"></i></button>
+        </div>
+        <div id="dialog-body">
+          <div class="form-group">
+            <label>Proje Adı</label>
+            <input type="text" id="project-name-input" placeholder="Sunum adı..." />
+          </div>
+          <div class="form-group">
+            <label>Şablon</label>
+            <select id="template-select">
+              <option value="blank">Boş Proje</option>
+              <option value="business">İş Sunumu</option>
+              <option value="education">Eğitim</option>
+              <option value="minimal">Minimalist</option>
+            </select>
+          </div>
+        </div>
+        <div class="dialog-foot">
+          <button id="dialog-cancel" class="btn-secondary">İptal</button>
+          <button id="dialog-confirm" class="btn-primary">Oluştur</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="rename-overlay" class="hidden">
+      <div id="rename-dialog">
+        <div class="dialog-head">
+          <span>Yeniden Adlandır</span>
+          <button id="rename-close"><i data-lucide="x"></i></button>
+        </div>
+        <div class="dialog-body">
+          <div class="form-group">
+            <label>Yeni Ad</label>
+            <input type="text" id="rename-input" />
+          </div>
+        </div>
+        <div class="dialog-foot">
+          <button id="rename-cancel" class="btn-secondary">İptal</button>
+          <button id="rename-confirm" class="btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="ctx-menu" class="hidden">
+      <div class="ctx-item" data-action="open"><i data-lucide="file-text"></i> Aç</div>
+      <div class="ctx-item" data-action="rename"><i data-lucide="pencil"></i> Yeniden Adlandır</div>
+      <div class="ctx-item" data-action="duplicate"><i data-lucide="copy"></i> Kopyala</div>
+      <div class="ctx-item ctx-danger" data-action="delete"><i data-lucide="trash-2"></i> Sil</div>
+    </div>
+  </div>
+
+  <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
+  <script src="js/projectManager.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file:; img-src 'self' data: file:;">
+  <title>oSlide2 - Editör</title>
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="topbar-left">
+        <button class="tb-btn" id="home-btn" title="Ana Ekran"><i data-lucide="arrow-left"></i></button>
+        <span class="logo">oSlide2</span>
+        <span class="sep"></span>
+        <button class="tb-btn" data-action="add-text" title="Metin"><i data-lucide="text-cursor-input"></i></button>
+        <button class="tb-btn" data-action="add-title" title="Başlık"><i data-lucide="heading"></i></button>
+        <button class="tb-btn" data-action="add-image" title="Resim"><i data-lucide="image"></i></button>
+        <button class="tb-btn" data-action="add-rect" title="Dikdörtgen"><i data-lucide="square"></i></button>
+        <button class="tb-btn" data-action="add-circle" title="Daire"><i data-lucide="circle"></i></button>
+        <button class="tb-btn" data-action="add-arrow" title="Ok"><i data-lucide="arrow-right"></i></button>
+        <span class="sep"></span>
+        <select id="font-family-select">
+          <option value="Arial">Arial</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Courier New">Courier New</option>
+          <option value="Verdana">Verdana</option>
+        </select>
+        <select id="font-size-select">
+          <option>12</option><option>14</option><option>16</option><option>18</option>
+          <option>20</option><option>24</option><option>28</option><option>32</option>
+          <option>36</option><option>48</option><option>60</option><option selected>72</option>
+        </select>
+        <span class="sep"></span>
+        <button class="tb-btn" data-action="bold" title="Kalın"><i data-lucide="bold"></i></button>
+        <button class="tb-btn" data-action="italic" title="İtalik"><i data-lucide="italic"></i></button>
+        <button class="tb-btn" data-action="underline" title="Altı Çizili"><i data-lucide="underline"></i></button>
+        <button class="tb-btn" data-action="strikethrough" title="Üstü Çizili"><i data-lucide="strikethrough"></i></button>
+        <input type="color" id="text-color-input" value="#333333" title="Renk">
+        <input type="color" id="text-bg-color" value="#000000" title="Arkaplan Rengi">
+        <span class="sep"></span>
+        <button class="tb-btn" data-action="align-left" title="Sola Hizala"><i data-lucide="align-left"></i></button>
+        <button class="tb-btn" data-action="align-center" title="Ortala"><i data-lucide="align-center"></i></button>
+        <button class="tb-btn" data-action="align-right" title="Sağa Hizala"><i data-lucide="align-right"></i></button>
+        <span class="sep"></span>
+        <button class="tb-btn" data-action="bring-forward" title="Öne Getir"><i data-lucide="chevron-up"></i></button>
+        <button class="tb-btn" data-action="send-backward" title="Arkaya Gönder"><i data-lucide="chevron-down"></i></button>
+        <button class="tb-btn" data-action="delete" title="Sil"><i data-lucide="trash-2"></i></button>
+      </div>
+      <div class="topbar-right">
+        <button class="tb-btn accent" data-action="start-presentation" title="Sunum (F5)"><i data-lucide="play"></i></button>
+      </div>
+    </header>
+
+    <div id="workspace">
+      <aside id="sidebar">
+        <div class="sidebar-head">
+          <span>Slaytlar</span>
+          <div class="sidebar-actions">
+            <button id="add-slide-btn" title="Yeni"><i data-lucide="plus"></i></button>
+            <button id="dup-slide-btn" title="Çoğalt"><i data-lucide="copy"></i></button>
+          </div>
+        </div>
+        <div id="slide-list"></div>
+      </aside>
+
+      <main id="canvas-area">
+        <div id="canvas">
+          <div id="slide-container"></div>
+          <div id="grid-overlay"></div>
+        </div>
+      </main>
+
+      <aside id="panel" class="panel-hidden">
+        <div class="panel-head">
+          <span id="panel-title">Özellikler</span>
+          <button id="panel-close"><i data-lucide="x"></i></button>
+        </div>
+        <div id="panel-body"></div>
+      </aside>
+    </div>
+
+    <div id="slide-bg-bar">
+      <label>Arkaplan</label>
+      <input type="color" id="slide-bg-color" value="#ffffff">
+      <select id="theme-select">
+        <option value="default">Varsayılan</option>
+        <option value="dark">Karanlık</option>
+        <option value="nature">Doğa</option>
+        <option value="ocean">Okyanus</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="editor-ctx-menu" class="ctx-menu hidden">
+    <div class="ctx-item" data-action="copy"><i data-lucide="copy"></i> Kopyala</div>
+    <div class="ctx-item" data-action="paste"><i data-lucide="clipboard-paste"></i> Yapıştır</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" data-action="bring-forward"><i data-lucide="chevron-up"></i> Öne Getir</div>
+    <div class="ctx-item" data-action="send-backward"><i data-lucide="chevron-down"></i> Arkaya Gönder</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item" data-action="delete"><i data-lucide="trash-2"></i> Sil</div>
+  </div>
+
+  <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
+  <script src="js/editorState.js"></script>
+  <script src="js/editorActions.js"></script>
+  <script src="js/editorUI.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/canvas.js"></script>
+  <script src="js/fileManager.js"></script>
+</body>
+</html>
