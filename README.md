@@ -1,66 +1,97 @@
 # oSlide2
 
-Electron tabanlı, modern bir slide/sunum hazırlama uygulaması.
+A modern Electron-based slide/presentation application with a DOM-based editor, real-time preview, and fullscreen presentation mode.
 
-## Özellikler
+## Features
 
-- **Proje Yönetimi** — Ana ekrandan proje oluşturma, açma, yeniden adlandırma, kopyalama ve silme
-- **DOM Tabanlı Editör** — Slayt düzenleme, öğe ekleme (metin, başlık, resim, dikdörtgen, daire, ok)
-- **Özellik Paneli** — Seçili öğenin konum, boyut, dönüş, opaklık, yazı tipi ve renk ayarları
-- **Sürükle-Bırak** — Öğeleri taşıma ve yeniden boyutlandırma, dosyaları sürükleyerek resim ekleme
-- **slayt Yönetimi** — Slayt ekleme, çoğaltma, silme ve sürükleme ile yeniden sıralama
-- **Geri Al / İleri Al** — Sınırsız geri alma desteği
-- **Sunum Modu** — Tam ekran sunum, geçiş efektleri (fade/slide/zoom), zamanlayıcı
-- **Dışa Aktar** — PDF ve PNG olarak dışa aktarma
-- **Klavye Kısayolları** — Ctrl+Z/Y (geri/ileri al), Ctrl+C/V (kopyala/yapıştır), Ctrl+B/I/U (yazı stilleri), F5 (sunum)
-- **Sağ Tık Menüsü** — Ana ekranda proje kartları ve editörde öğeler için bağlam menüsü
+- **Project Management** — Create, open, rename, duplicate, and delete projects from the home screen
+- **DOM-Based Editor** — Edit slides and add elements: text, titles, images, rectangles, circles, arrows
+- **Properties Panel** — Adjust position, size, rotation, opacity, font family, and colors for selected elements
+- **Drag & Drop** — Move and resize elements on canvas; drag images from your file system
+- **Slide Management** — Add, duplicate, delete, and reorder slides via drag-and-drop thumbnails
+- **Undo / Redo** — Unlimited undo/redo stack
+- **Presentation Mode** — Fullscreen slideshow with fade/slide/zoom transitions and a live timer
+- **Export** — Export to PDF or PNG
+- **Keyboard Shortcuts** — Fully customizable via Settings > Shortcuts
+- **Theme** — Dark, Light, and System themes with a visual 3-card selector
+- **i18n** — Turkish and English language support (extensible)
+- **Context Menu** — Right-click menus for project cards and editor elements
 
-## Kullanılan Teknolojiler
+## Built With
 
-- [Electron](https://www.electronjs.org/) — Masaüstü uygulama çatısı
-- [Lucide](https://lucide.dev/) — İkon kütüphanesi
-- Vanilla JavaScript (framework yok)
+- [Electron](https://www.electronjs.org/) — Desktop application framework
+- [Lucide](https://lucide.dev/) — Icon library
+- Vanilla JavaScript — No framework dependencies
 
-## Kurulum
+## Installation
 
 ```bash
 npm install
 npm start
 ```
 
-## Kullanım
+## Usage
 
-1. Uygulama açıldığında ana ekran görüntülenir
-2. "Yeni Proje" ile yeni bir sunum oluşturun veya mevcut projeyi açın
-3. Editörde araç çubuğunu kullanarak slaytlara öğe ekleyin
-4. F5 tuşu ile sunum modunu başlatın
-5. Ctrl+S ile projenizi kaydedin
+1. On launch, the home screen is displayed
+2. Click "New Project" to create a presentation or open an existing one
+3. Use the toolbar in the editor to add elements to slides
+4. Press F5 to start presentation mode
+5. Press Ctrl+S to save your project
 
-## Proje Yapısı
+## Project Structure
 
 ```
-├── main.js              # Electron ana işlem
-├── preload.js           # IPC bağlantıları
-├── home.html            # Ana ekran
-├── editor.html          # Slayt editörü
-├── presentation.html    # Sunum modu
+├── main.js                  # Electron main process
+├── preload.js               # IPC bridge
+├── home.html                # Home screen
+├── editor.html              # Slide editor
+├── presentation.html        # Presentation mode
 ├── css/
 │   ├── home.css
 │   ├── editor.css
 │   └── presentation.css
 ├── js/
-│   ├── home.js          # Ana ekran mantığı
-│   ├── projectManager.js # Proje CRUD işlemleri
-│   ├── editorState.js   # Uygulama durumu
-│   ├── editorActions.js # Slayt/öğe CRUD
-│   ├── editorUI.js      # Arayüz render işlemleri
-│   ├── editor.js        # Editör başlatma ve olay yönetimi
-│   ├── canvas.js        # Tuval etkileşimleri
-│   ├── fileManager.js   # Dosya işlemleri
-│   └── presentation.js  # Sunum mantığı
+│   ├── core/
+│   │   ├── state.js         # Application state, undo/redo
+│   │   └── actions.js       # Slide and element CRUD
+│   ├── ui/
+│   │   ├── renderer.js      # DOM rendering
+│   │   ├── canvas.js        # Canvas interactions (drag, resize)
+│   │   └── panels.js        # Properties panel
+│   ├── services/
+│   │   ├── projectManager.js # Project CRUD
+│   │   ├── fileManager.js   # File I/O
+│   │   ├── shortcuts.js     # Customizable shortcuts
+│   │   ├── i18n.js          # Localization
+│   │   └── theme.js         # Theme management
+│   ├── pages/
+│   │   ├── home.js          # Home screen logic
+│   │   ├── editor.js        # Editor logic
+│   │   └── presentation.js  # Presentation logic
+│   └── locales/
+│       ├── tr.json          # Turkish translations
+│       └── en.json          # English translations
 └── package.json
 ```
 
-## Lisans
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl+Z | Undo |
+| Ctrl+Y | Redo |
+| Ctrl+S | Save |
+| Ctrl+C | Copy |
+| Ctrl+V | Paste |
+| Ctrl+B | Bold |
+| Ctrl+I | Italic |
+| Ctrl+U | Underline |
+| Delete / Backspace | Delete selected |
+| F5 | Start presentation |
+| Escape | Close dialog/menu |
+
+All shortcuts are customizable in Settings > Shortcuts.
+
+## License
 
 ISC
