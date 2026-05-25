@@ -132,6 +132,58 @@ function escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+let editorThemes = []
+
+async function showThemePicker() {
+  if (window.electronAPI) {
+    const cfg = await window.electronAPI.getConfig()
+    editorThemes = cfg.projectThemes || []
+  } else {
+    await ProjectManager.init()
+    editorThemes = await ProjectManager.getThemes()
+  }
+  const list = document.getElementById('editor-theme-list')
+  if (!list) return
+  list.innerHTML = editorThemes.map(th => `
+    <div class="editor-theme-item" data-id="${th.id}">
+      <div class="editor-theme-preview" style="background:${th.canvasBg};padding:12px;border-radius:6px">
+        <div style="color:${th.titleColor};font-family:${th.titleFont};font-size:16px;font-weight:700">Aa</div>
+        <div style="color:${th.textColor};font-family:${th.textFont};font-size:11px;margin-top:4px">${esc(th.name)}</div>
+      </div>
+      <div class="editor-theme-name">${esc(th.name)}</div>
+    </div>
+  `).join('')
+  list.querySelectorAll('.editor-theme-item').forEach(item => {
+    item.onclick = () => applyEditorTheme(item.dataset.id)
+  })
+  document.getElementById('editor-theme-overlay')?.classList.remove('hidden')
+  if (window.lucide) lucide.createIcons()
+}
+
+function applyEditorTheme(themeId) {
+  const th = editorThemes.find(t => t.id === themeId)
+  if (!th) return
+  save()
+  for (const s of App.slides) {
+    s.background = th.canvasBg
+    for (const el of s.elements) {
+      const isTitle = el.type === 'title' || (el.fontSize >= 32 && el.bold)
+      if (el.type === 'text' || el.type === 'title') {
+        el.color = isTitle ? th.titleColor : th.textColor
+        el.fontFamily = isTitle ? th.titleFont : th.textFont
+      }
+      el.animType = th.animType
+      el.animDuration = th.animDuration
+    }
+  }
+  closeThemePicker()
+  renderAll()
+}
+
+function closeThemePicker() {
+  document.getElementById('editor-theme-overlay')?.classList.add('hidden')
+}
+
 function loadProjectData(d) {
   if (d._projectId) App.projectId = d._projectId;
   if (d._projectName) App.projectName = d._projectName;
@@ -423,6 +475,10 @@ function init() {
   // Init shortcuts
   initShortcuts();
 
+  document.getElementById('editor-theme-btn')?.addEventListener('click', showThemePicker)
+  document.getElementById('editor-theme-close')?.addEventListener('click', closeThemePicker)
+  document.getElementById('editor-theme-cancel')?.addEventListener('click', closeThemePicker)
+
   document.getElementById('home-btn')?.addEventListener('click', () => {
     if (window.electronAPI) window.electronAPI.returnHome();
   });
@@ -462,6 +518,8 @@ window.startPresentation = startPresentation;
 window.exportPDF = exportPDF;
 window.exportPNG = exportPNG;
 window.loadProjectData = loadProjectData;
+window.showThemePicker = showThemePicker;
+window.closeThemePicker = closeThemePicker;
 window.openSettings = openSettings;
 window.closeSettings = closeSettings;
 window.saveSettings = saveSettings;

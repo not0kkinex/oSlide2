@@ -677,6 +677,42 @@ html, body {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
+
+/* Editor Theme Picker */
+#editor-theme-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 300;
+}
+#editor-theme-overlay.hidden { display: none; }
+#editor-theme-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; width: 420px; max-width: 90vw;
+  max-height: 80vh; display: flex; flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+#editor-theme-body {
+  flex: 1; overflow-y: auto; padding: 16px 20px;
+}
+#editor-theme-list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.editor-theme-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; transition: all 0.15s;
+}
+.editor-theme-item:hover {
+  border-color: var(--accent); background: var(--surface3);
+}
+.editor-theme-preview {
+  width: 80px; flex-shrink: 0;
+}
+.editor-theme-name {
+  font-size: 14px; font-weight: 600;
+}
+
 .settings-head {
   display: flex;
   justify-content: space-between;

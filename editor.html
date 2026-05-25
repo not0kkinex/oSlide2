@@ -55,6 +55,7 @@
         <button class="tb-btn" data-action="delete" data-i18n-attr="title:toolbar.delete"><i data-lucide="trash-2"></i></button>
       </div>
       <div class="topbar-right">
+        <button class="tb-btn" id="editor-theme-btn" data-i18n-attr="title:toolbar.theme"><i data-lucide="palette"></i></button>
         <button class="tb-btn" id="editor-settings-btn" data-i18n-attr="title:toolbar.settings"><i data-lucide="settings"></i></button>
         <button class="tb-btn accent" data-action="start-presentation" data-i18n-attr="title:toolbar.presentation"><i data-lucide="play"></i></button>
       </div>
@@ -177,6 +178,23 @@
     </div>
   </div>
 
+  <!-- Theme Picker -->
+  <div id="editor-theme-overlay" class="hidden">
+    <div id="editor-theme-panel">
+      <div class="dialog-head">
+        <span data-i18n="editor.applyTheme">Tema Uygula</span>
+        <button id="editor-theme-close"><i data-lucide="x"></i></button>
+      </div>
+      <div id="editor-theme-body">
+        <div id="editor-theme-list"></div>
+      </div>
+      <div class="dialog-foot">
+        <button id="editor-theme-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
   <div id="editor-ctx-menu" class="ctx-menu hidden">
     <div class="ctx-item" data-action="copy"><i data-lucide="copy"></i> <span data-i18n="context.copy">Kopyala</span></div>
     <div class="ctx-item" data-action="paste"><i data-lucide="clipboard-paste"></i> <span data-i18n="context.paste">Yapıştır</span></div>
@@ -191,6 +209,7 @@
   <script src="js/services/theme.js"></script>
   <script src="js/services/shortcuts.js"></script>
   <script src="js/services/i18n.js"></script>
+  <script src="js/services/projectManager.js"></script>
   <script src="js/core/state.js"></script>
   <script src="js/core/actions.js"></script>
   <script src="js/ui/renderer.js"></script>

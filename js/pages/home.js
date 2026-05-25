@@ -366,6 +366,12 @@
   function showNewDialog() {
     document.getElementById('project-name-input').value = '';
     document.getElementById('template-select').value = 'blank';
+    const themeSel = document.getElementById('project-theme-select')
+    if (themeSel) {
+      ProjectManager.getThemes().then(thList => {
+        themeSel.innerHTML = thList.map(th => `<option value="${th.id}">${esc(th.name)}</option>`).join('')
+      })
+    }
     document.getElementById('dialog-overlay').classList.remove('hidden');
     setTimeout(() => document.getElementById('project-name-input').focus(), 100);
   }
@@ -374,12 +380,35 @@
     document.getElementById('dialog-overlay').classList.add('hidden');
   }
 
+  function applyThemeToData(slideData, theme) {
+    if (!theme) return slideData
+    for (const slide of slideData.slides || []) {
+      slide.background = theme.canvasBg
+      for (const el of slide.elements || []) {
+        const isTitle = el.type === 'title' || (el.fontSize >= 32 && el.bold)
+        if (el.type === 'text' || el.type === 'title') {
+          el.color = isTitle ? theme.titleColor : theme.textColor
+          el.fontFamily = isTitle ? theme.titleFont : theme.textFont
+        }
+        el.animType = theme.animType
+        el.animDuration = theme.animDuration
+      }
+    }
+    return slideData
+  }
+
   async function confirmNew() {
     const name = document.getElementById('project-name-input').value.trim();
     if (!name) { document.getElementById('project-name-input').focus(); return; }
     const template = document.getElementById('template-select').value;
+    const themeId = document.getElementById('project-theme-select')?.value
     closeDialog();
     const result = await ProjectManager.create(name, template);
+    if (result && themeId) {
+      const themes = await ProjectManager.getThemes()
+      const th = themes.find(t => t.id === themeId)
+      if (th) applyThemeToData(result.slideData, th)
+    }
     if (result && window.electronAPI) {
       if (window.electronAPI.createProjectFile) {
         const filePath = await window.electronAPI.createProjectFile({
