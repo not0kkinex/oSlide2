@@ -35,6 +35,13 @@ async function updateProjectMeta() {
   if (App.projectId && window.electronAPI?.updateProjectMeta) {
     await window.electronAPI.updateProjectMeta({ projectId: App.projectId, slideCount: App.slides.length, path: App.path });
   }
+  // Generate thumbnail from first slide
+  if (App.projectId && window.electronAPI?.generateThumbnail && App.slides.length > 0) {
+    const thumb = await window.electronAPI.generateThumbnail(App.slides[0]);
+    if (thumb && window.electronAPI.updateProjectMeta) {
+      await window.electronAPI.updateProjectMeta({ projectId: App.projectId, slideCount: App.slides.length, path: App.path, thumbnail: thumb });
+    }
+  }
 }
 
 function saveFallback() { const b=new Blob([JSON.stringify(getData(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='sunum.slidelab'; a.click(); URL.revokeObjectURL(a); }

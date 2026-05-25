@@ -52,7 +52,7 @@ const ProjectManager = {
     let slideData = getTemplateSlides(template);
     const project = {
       id, name, path: null, lastModified: now, created: now,
-      slideCount: slideData.slides.length, thumbnail: null
+      slideCount: slideData.slides.length, thumbnail: null, favorite: false
     };
     this.config.projects.push(project);
     this.addRecent(id);
@@ -102,7 +102,12 @@ const ProjectManager = {
     if (!p) return null;
     const newId = 'proj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
-    const dup = { ...p, id: newId, name: p.name + ' (Kopya)', created: now, lastModified: now, path: null };
+    const dup = { ...p, id: newId, name: p.name + ' (Kopya)', created: now, lastModified: now, path: null, favorite: false };
+    // Copy file if original has a path
+    if (p.path && window.electronAPI?.duplicateFile) {
+      const newPath = await window.electronAPI.duplicateFile({ sourcePath: p.path, newId, name: dup.name });
+      if (newPath) dup.path = newPath;
+    }
     this.config.projects.push(dup);
     this.addRecent(newId);
     await this.save();
@@ -131,10 +136,28 @@ const ProjectManager = {
     await this.save();
   },
 
-  addRecent(id) {
-    this.config.recentProjects = this.config.recentProjects.filter(rid => rid !== id);
-    this.config.recentProjects.unshift(id);
-    if (this.config.recentProjects.length > 10) this.config.recentProjects.pop();
+  async toggleFavorite(id) {
+    await this.init();
+    const p = this.config.projects.find(p => p.id === id);
+    if (!p) return;
+    p.favorite = !p.favorite;
+    await this.save();
+    return p.favorite;
+  },
+
+  async getFavorites() {
+    await this.init();
+    return this.config.projects.filter(p => p.favorite);
+  },
+
+  async getAll() {
+    await this.init();
+    const sorted = [...this.config.projects].sort((a, b) => {
+      if (a.favorite && !b.favorite) return -1;
+      if (!a.favorite && b.favorite) return 1;
+      return new Date(b.lastModified) - new Date(a.lastModified);
+    });
+    return sorted;
   },
 
   async search(query) {
@@ -143,7 +166,17 @@ const ProjectManager = {
     return this.config.projects.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.id.toLowerCase().includes(q)
-    );
+    ).sort((a, b) => {
+      if (a.favorite && !b.favorite) return -1;
+      if (!a.favorite && b.favorite) return 1;
+      return new Date(b.lastModified) - new Date(a.lastModified);
+    });
+  },
+
+  addRecent(id) {
+    this.config.recentProjects = this.config.recentProjects.filter(rid => rid !== id);
+    this.config.recentProjects.unshift(id);
+    if (this.config.recentProjects.length > 10) this.config.recentProjects.pop();
   }
 };
 

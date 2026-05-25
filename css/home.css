@@ -530,6 +530,110 @@ html, body {
   background: rgba(255,71,87,0.1);
 }
 
+.ctx-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 8px;
+}
+
+/* Star / Favorite button */
+.card-star-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 26px;
+  height: 26px;
+  background: rgba(0,0,0,0.4);
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.15s;
+}
+
+.project-card:hover .card-star-btn {
+  display: flex;
+}
+
+.card-star-btn:hover {
+  background: rgba(255,215,0,0.3);
+}
+
+.card-star-btn.active {
+  display: flex;
+  background: rgba(255,215,0,0.2);
+  color: var(--accent);
+}
+
+.card-star-btn.active:hover {
+  background: rgba(255,215,0,0.35);
+}
+
+.card-star-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Favorite filter button */
+#fav-filter-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+}
+
+#fav-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#fav-filter-btn.active {
+  background: rgba(255,215,0,0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#fav-filter-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Import button */
+#import-file-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+}
+
+#import-file-btn:hover {
+  border-color: var(--text2);
+  color: var(--text);
+}
+
+#import-file-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
 /* Empty state */
 .empty-state {
   text-align: center;

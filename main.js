@@ -155,6 +155,66 @@ ipcMain.handle('open-editor', (event, projectData) => {
   return true;
 });
 
+ipcMain.handle('duplicate-file', async (event, { sourcePath, newId, name }) => {
+  try {
+    const data = JSON.parse(fs.readFileSync(sourcePath, 'utf-8'));
+    const projectsDir = path.join(app.getPath('userData'), 'projects');
+    fs.mkdirSync(projectsDir, { recursive: true });
+    const filePath = path.join(projectsDir, `${newId}.slidelab`);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    // Update config with new path
+    const config = loadConfig();
+    const p = config.projects.find(pr => pr.id === newId);
+    if (p) { p.path = filePath; saveConfig(config); }
+    return filePath;
+  } catch { return null; }
+});
+
+ipcMain.handle('export-project', async (event, { projectId, name, slideData }) => {
+  const result = await dialog.showSaveDialog(homeWindow || editorWindow, {
+    defaultPath: `${name || 'proje'}.slidelab`,
+    filters: [{ name: 'Slide Projesi', extensions: ['slidelab'] }]
+  });
+  if (!result.canceled && result.filePath) {
+    try {
+      fs.writeFileSync(result.filePath, JSON.stringify(slideData, null, 2), 'utf-8');
+      return result.filePath;
+    } catch { return null; }
+  }
+  return null;
+});
+
+ipcMain.handle('import-project', async () => {
+  const result = await dialog.showOpenDialog(homeWindow || editorWindow, {
+    filters: [{ name: 'Slide Projesi', extensions: ['slidelab'] }],
+    properties: ['openFile']
+  });
+  if (!result.canceled && result.filePaths.length > 0) {
+    try {
+      const data = JSON.parse(fs.readFileSync(result.filePaths[0], 'utf-8'));
+      return { filePath: result.filePaths[0], slideData: data };
+    } catch { return null; }
+  }
+  return null;
+});
+
+ipcMain.handle('generate-thumbnail', async (event, slideData) => {
+  try {
+    const { BrowserWindow: OffscreenWindow } = require('electron');
+    const thumbWin = new OffscreenWindow({
+      width: 960, height: 540, show: false,
+      webPreferences: { contextIsolation: true, nodeIntegration: false }
+    });
+    const html = buildSlideHTML(slideData, 'default');
+    await thumbWin.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+    const image = await thumbWin.webContents.capturePage();
+    const resized = image.resize({ width: 300, height: 169 });
+    const base64 = resized.toDataURL();
+    thumbWin.close();
+    return base64;
+  } catch { return null; }
+});
+
 ipcMain.handle('create-project-file', async (event, { projectId, name, slideData }) => {
   const projectsDir = path.join(app.getPath('userData'), 'projects');
   try { fs.mkdirSync(projectsDir, { recursive: true }); } catch {}
@@ -220,13 +280,14 @@ ipcMain.handle('delete-file', async (event, filePath) => {
   try { fs.unlinkSync(filePath); return true; } catch { return false; }
 });
 
-ipcMain.handle('update-project-meta', async (event, { projectId, slideCount, path: filePath }) => {
+ipcMain.handle('update-project-meta', async (event, { projectId, slideCount, path: filePath, thumbnail }) => {
   const config = loadConfig();
   const p = config.projects.find(pr => pr.id === projectId);
   if (p) {
     p.slideCount = slideCount;
     p.lastModified = new Date().toISOString();
     if (filePath) p.path = filePath;
+    if (thumbnail) p.thumbnail = thumbnail;
     saveConfig(config);
     return true;
   }

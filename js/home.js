@@ -1,26 +1,41 @@
 (function() {
   let ctxTarget = null;
 
+  let favFilterActive = false;
+
   async function init() {
     await ProjectManager.init();
     render();
     bindEvents();
-
-    // Keyboard shortcuts
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') { closeDialog(); closeRename(); hideCtx(); }
+      // Ctrl+1..9 quick open recent projects
+      if (e.ctrlKey && e.key >= '1' && e.key <= '9') {
+        const idx = parseInt(e.key) - 1;
+        openRecentByIndex(idx);
+      }
     });
   }
 
   async function render() {
-    const projects = await ProjectManager.getAll();
+    const projects = favFilterActive
+      ? await ProjectManager.getFavorites()
+      : await ProjectManager.getAll();
     const welcome = document.getElementById('welcome');
     const mainView = document.getElementById('main-view');
     const grid = document.getElementById('projects-grid');
     const recent = document.getElementById('recent-section');
     const recentList = document.getElementById('recent-list');
+    const favBtn = document.getElementById('fav-filter-btn');
+    if (favBtn) favBtn.classList.toggle('active', favFilterActive);
 
     if (projects.length === 0) {
+      if (favFilterActive) {
+        welcome.classList.add('hidden');
+        mainView.classList.remove('hidden');
+        grid.innerHTML = '<div class="empty-state"><div class="icon">⭐</div><p>Favori proje yok</p></div>';
+        return;
+      }
       welcome.classList.remove('hidden');
       mainView.classList.add('hidden');
       return;
@@ -28,9 +43,7 @@
     welcome.classList.add('hidden');
     mainView.classList.remove('hidden');
 
-    // Grid
     grid.innerHTML = '';
-    // New project card
     const newCard = document.createElement('div');
     newCard.className = 'new-project-card';
     newCard.innerHTML = '<div class="plus">+</div><div class="label">Yeni Proje</div>';
@@ -42,6 +55,11 @@
       card.className = 'project-card';
       card.style.animationDelay = (i * 0.05) + 's';
       card.dataset.id = p.id;
+
+      const starBtn = document.createElement('button');
+      starBtn.className = 'card-star-btn' + (p.favorite ? ' active' : '');
+      starBtn.innerHTML = '<i data-lucide="star"></i>';
+      starBtn.onclick = async (e) => { e.stopPropagation(); await ProjectManager.toggleFavorite(p.id); render(); };
 
       const thumb = document.createElement('div');
       thumb.className = 'card-thumb';
@@ -55,13 +73,15 @@
 
       const info = document.createElement('div');
       info.className = 'card-info';
-      info.innerHTML = `<div class="card-name">${esc(p.name)}</div><div class="card-meta">${p.slideCount || 0} slide • ${timeAgo(p.lastModified)}</div>`;
+      const favIcon = p.favorite ? '⭐ ' : '';
+      info.innerHTML = `<div class="card-name">${favIcon}${esc(p.name)}</div><div class="card-meta">${p.slideCount || 0} slide • ${timeAgo(p.lastModified)}</div>`;
 
       const delBtn = document.createElement('button');
       delBtn.className = 'card-del-btn';
       delBtn.innerHTML = '<i data-lucide="trash-2"></i>';
       delBtn.onclick = async (e) => { e.stopPropagation(); if (confirm('Bu projeyi silmek istediğinize emin misiniz?')) { await ProjectManager.delete(p.id); render(); } };
 
+      card.appendChild(starBtn);
       card.appendChild(delBtn);
       card.appendChild(thumb);
       card.appendChild(info);
@@ -131,6 +151,13 @@
     document.getElementById('rename-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') confirmRename(); });
 
     // Context menu actions
+    document.getElementById('fav-filter-btn')?.addEventListener('click', () => {
+      favFilterActive = !favFilterActive;
+      render();
+    });
+
+    document.getElementById('import-file-btn')?.addEventListener('click', importProject);
+
     document.getElementById('ctx-menu')?.addEventListener('click', async (e) => {
       const item = e.target.closest('.ctx-item');
       const action = item?.dataset.action;
@@ -140,6 +167,8 @@
         case 'open': openProject(ctxTarget); break;
         case 'rename': showRename(ctxTarget); break;
         case 'duplicate': await ProjectManager.duplicate(ctxTarget); render(); break;
+        case 'export': await exportProject(ctxTarget); break;
+        case 'favorite': await ProjectManager.toggleFavorite(ctxTarget); render(); break;
         case 'delete':
           if (confirm('Bu projeyi silmek istediğinize emin misiniz?')) {
             await ProjectManager.delete(ctxTarget);
@@ -147,6 +176,9 @@
           }
           break;
       }
+    });
+    document.getElementById('settings-btn')?.addEventListener('click', () => {
+      alert('Ayarlar paneli henüz eklenecek.');
     });
 
     // Settings
@@ -269,6 +301,52 @@
     render();
   }
 
+  async function openRecentByIndex(idx) {
+    const recent = await ProjectManager.getRecent();
+    const p = recent[idx];
+    if (p) openProject(p.id);
+  }
+
+  async function exportProject(id) {
+    const result = await ProjectManager.open(id);
+    if (!result || !window.electronAPI?.exportProject) return;
+    const filePath = await window.electronAPI.exportProject({
+      projectId: result.project.id,
+      name: result.project.name,
+      slideData: result.slideData
+    });
+    if (filePath) {
+      // Update project path
+      result.project.path = filePath;
+      const pmP = ProjectManager.config.projects.find(pr => pr.id === id);
+      if (pmP) pmP.path = filePath;
+      render();
+    }
+  }
+
+  async function importProject() {
+    if (!window.electronAPI?.importProject) return;
+    const result = await window.electronAPI.importProject();
+    if (!result || !result.slideData) return;
+    const fileName = result.filePath.split(/[/\\]/).pop().replace('.slidelab', '');
+    const created = await ProjectManager.create(fileName);
+    if (!created) return;
+    // Copy slide data
+    const pmP = ProjectManager.config.projects.find(pr => pr.id === created.project.id);
+    if (pmP) {
+      // Save imported data to project file
+      if (window.electronAPI.createProjectFile) {
+        const filePath = await window.electronAPI.createProjectFile({
+          projectId: created.project.id,
+          name: fileName,
+          slideData: result.slideData
+        });
+        if (filePath) pmP.path = filePath;
+      }
+    }
+    render();
+  }
+
   function renderSearchResults(results) {
     const grid = document.getElementById('projects-grid');
     const recent = document.getElementById('recent-section');
@@ -283,17 +361,36 @@
       card.className = 'project-card';
       card.style.animationDelay = (i * 0.04) + 's';
       card.dataset.id = p.id;
-      card.innerHTML = `
-        <div class="card-thumb">${p.thumbnail ? `<img src="${p.thumbnail}" />` : '📄'}</div>
-        <div class="card-info">
-          <div class="card-name">${esc(p.name)}</div>
-          <div class="card-meta">${p.slideCount || 0} slide • ${timeAgo(p.lastModified)}</div>
-        </div>
-      `;
+
+      const starBtn = document.createElement('button');
+      starBtn.className = 'card-star-btn' + (p.favorite ? ' active' : '');
+      starBtn.innerHTML = '<i data-lucide="star"></i>';
+      starBtn.onclick = async (e) => { e.stopPropagation(); await ProjectManager.toggleFavorite(p.id); renderSearchResults(await ProjectManager.search(document.getElementById('search-input').value.trim())); };
+
+      const thumb = document.createElement('div');
+      thumb.className = 'card-thumb';
+      if (p.thumbnail) {
+        const img = document.createElement('img');
+        img.src = p.thumbnail;
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = '📄';
+      }
+
+      const info = document.createElement('div');
+      info.className = 'card-info';
+      const favIcon = p.favorite ? '⭐ ' : '';
+      info.innerHTML = `<div class="card-name">${favIcon}${esc(p.name)}</div><div class="card-meta">${p.slideCount || 0} slide • ${timeAgo(p.lastModified)}</div>`;
+
+      card.appendChild(starBtn);
+      card.appendChild(thumb);
+      card.appendChild(info);
+
       card.onclick = () => openProject(p.id);
       card.oncontextmenu = (ev) => { ev.preventDefault(); showCtx(ev, p.id); };
       grid.appendChild(card);
     });
+    if (window.lucide) lucide.createIcons();
   }
 
   function timeAgo(dateStr) {

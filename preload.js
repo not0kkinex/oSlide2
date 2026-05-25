@@ -23,6 +23,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Presentation
   startPresentation: (data) => ipcRenderer.invoke('start-presentation', data),
 
+  // Duplicate
+  duplicateFile: (data) => ipcRenderer.invoke('duplicate-file', data),
+
+  // Export / Import
+  exportProject: (data) => ipcRenderer.invoke('export-project', data),
+  importProject: () => ipcRenderer.invoke('import-project'),
+
+  // Thumbnail
+  generateThumbnail: (slideData) => ipcRenderer.invoke('generate-thumbnail', slideData),
+
   // Export
   exportPDF: (htmlContent) => ipcRenderer.invoke('export-pdf', htmlContent),
   exportPNG: (data) => ipcRenderer.invoke('export-png', data),
