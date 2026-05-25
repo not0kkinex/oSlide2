@@ -20,7 +20,13 @@ function loadConfig() {
     snapToGrid: false, gridSize: 20,
     defaultFontFamily: 'Arial', defaultFontSize: 16,
     canvasBg: '#1a1a1a', autoOpenPanel: true, thumbSize: 'medium'
-  } };
+  }, projectThemes: [
+    { id:'th_default', name:'Varsayılan', canvasBg:'#ffffff', titleColor:'#222222', titleFont:'Arial', textColor:'#333333', textFont:'Arial', animType:'fade', animDuration:0.5 },
+    { id:'th_dark', name:'Karanlık', canvasBg:'#1e1e1e', titleColor:'#ffffff', titleFont:'Arial', textColor:'#e0e0e0', textFont:'Arial', animType:'fade', animDuration:0.5 },
+    { id:'th_nature', name:'Doğa', canvasBg:'#f0f7e6', titleColor:'#2d5016', titleFont:'Georgia', textColor:'#3a6b1e', textFont:'Georgia', animType:'slide-up', animDuration:0.6 },
+    { id:'th_ocean', name:'Okyanus', canvasBg:'#e6f3ff', titleColor:'#003366', titleFont:'Helvetica', textColor:'#004080', textFont:'Helvetica', animType:'slide-left', animDuration:0.5 },
+    { id:'th_sunset', name:'Gün Batımı', canvasBg:'#2d1b00', titleColor:'#ffcc80', titleFont:'Georgia', textColor:'#ffb347', textFont:'Georgia', animType:'zoom-in', animDuration:0.6 }
+  ] };
 }
 
 function saveConfig(config) {
@@ -285,6 +291,13 @@ ipcMain.handle('read-file', async (event, filePath) => {
 ipcMain.handle('delete-file', async (event, filePath) => {
   try { fs.unlinkSync(filePath); return true; } catch { return false; }
 });
+
+ipcMain.handle('save-project-themes', (event, themes) => {
+  const config = loadConfig()
+  config.projectThemes = themes
+  saveConfig(config)
+  return true
+})
 
 ipcMain.handle('update-project-meta', async (event, { projectId, slideCount, path: filePath, thumbnail }) => {
   const config = loadConfig();

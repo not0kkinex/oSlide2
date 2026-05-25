@@ -30,6 +30,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportProject: (data) => ipcRenderer.invoke('export-project', data),
   importProject: () => ipcRenderer.invoke('import-project'),
 
+  // Project themes
+  saveProjectThemes: (themes) => ipcRenderer.invoke('save-project-themes', themes),
+
   // Thumbnail
   generateThumbnail: (slideData) => ipcRenderer.invoke('generate-thumbnail', slideData),
 

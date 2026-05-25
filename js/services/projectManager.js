@@ -179,6 +179,17 @@ const ProjectManager = {
     });
   },
 
+  async getThemes() {
+    await this.init()
+    return this.config.projectThemes || []
+  },
+
+  async saveThemes(themes) {
+    await this.init()
+    this.config.projectThemes = themes
+    await this.save()
+  },
+
   addRecent(id) {
     this.config.recentProjects = this.config.recentProjects.filter(rid => rid !== id);
     this.config.recentProjects.unshift(id);

@@ -965,6 +965,215 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Page Tabs */
+#page-tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.page-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.page-tab:hover { color: var(--text); background: var(--surface2); }
+
+.page-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.page-tab svg { width: 16px; height: 16px; }
+
+.page-content { display: none; }
+.page-content.active { display: block; }
+
+/* Themes header */
+#themes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+#themes-header .section-title { margin-bottom: 0; }
+
+/* Themes Grid */
+#themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.theme-card2 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.theme-card2:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(255,215,0,0.1);
+}
+
+.theme-card2-preview {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px;
+}
+
+.theme-card2-preview .th-preview-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.theme-card2-preview .th-preview-text {
+  font-size: 11px;
+}
+
+.theme-card2-body {
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.theme-card2-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.theme-card2-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.theme-card2-actions button {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.theme-card2-actions button:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.theme-card2-actions .th-del:hover { color: var(--danger); background: rgba(255,71,87,0.1); }
+
+.theme-card2-actions svg { width: 14px; height: 14px; }
+
+/* Theme Dialog */
+#theme-dlg-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#theme-dlg-overlay.hidden { display: none; }
+
+#theme-dlg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+#theme-dlg-body {
+  padding: 20px;
+}
+
+#theme-dlg-body .form-row {
+  display: flex;
+  gap: 12px;
+}
+
+#theme-dlg-body .form-row .form-group {
+  flex: 1;
+}
+
+#theme-dlg-body .form-group input[type="color"] {
+  width: 100%;
+  height: 40px;
+  padding: 2px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#theme-dlg-body .form-group input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+#theme-dlg-body .form-group input[type="number"]:focus {
+  border-color: var(--accent);
+}
+
+.btn-danger {
+  background: rgba(255,71,87,0.15);
+  color: var(--danger);
+  border: 1px solid rgba(255,71,87,0.3);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+
 /* Hidden */
 .hidden { display: none !important; }
 

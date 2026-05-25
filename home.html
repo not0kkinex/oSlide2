@@ -23,6 +23,11 @@
       </div>
     </header>
 
+    <div id="page-tabs">
+      <button class="page-tab active" data-tab="projects"><i data-lucide="folder"></i> <span data-i18n="home.projects">Projeler</span></button>
+      <button class="page-tab" data-tab="themes"><i data-lucide="palette"></i> <span data-i18n="home.themes">Temalar</span></button>
+    </div>
+
     <main id="content">
       <div id="welcome" class="hidden">
         <div class="welcome-icon"><i data-lucide="presentation"></i></div>
@@ -32,7 +37,7 @@
         <button id="welcome-open-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
       </div>
 
-      <div id="main-view">
+      <div id="page-projects" class="page-content active">
         <div id="top-actions">
           <button id="new-project-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
           <button id="open-file-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
@@ -53,6 +58,14 @@
           <h2 class="section-title" data-i18n="home.recent">Son Kullanılanlar</h2>
           <div id="recent-list"></div>
         </div>
+      </div>
+
+      <div id="page-themes" class="page-content hidden">
+        <div id="themes-header">
+          <h2 class="section-title" data-i18n="home.themes">Proje Temaları</h2>
+          <button id="new-theme-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newTheme">Yeni Tema</span></button>
+        </div>
+        <div id="themes-grid"></div>
       </div>
     </main>
 
@@ -112,6 +125,94 @@
       <div class="ctx-item" data-action="favorite"><i data-lucide="star"></i> <span data-i18n="context.favorite">Favorilere Ekle</span></div>
       <div class="ctx-sep"></div>
       <div class="ctx-item ctx-danger" data-action="delete"><i data-lucide="trash-2"></i> <span data-i18n="context.delete">Sil</span></div>
+    </div>
+  </div>
+
+  <!-- Theme Editor Dialog -->
+  <div id="theme-dlg-overlay" class="hidden">
+    <div id="theme-dlg">
+      <div class="dialog-head">
+        <span id="theme-dlg-title" data-i18n="theme.editTitle">Tema Düzenle</span>
+        <button id="theme-dlg-close"><i data-lucide="x"></i></button>
+      </div>
+      <div id="theme-dlg-body">
+        <div class="form-group">
+          <label data-i18n="theme.name">Tema Adı</label>
+          <input type="text" id="th-name" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="theme.canvasBg">Arkaplan</label>
+            <input type="color" id="th-canvasBg" value="#ffffff" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="theme.titleColor">Başlık Rengi</label>
+            <input type="color" id="th-titleColor" value="#222222" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="theme.textColor">Metin Rengi</label>
+            <input type="color" id="th-textColor" value="#333333" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="theme.titleFont">Başlık Yazı Tipi</label>
+            <select id="th-titleFont">
+              <option value="Arial">Arial</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="theme.textFont">Metin Yazı Tipi</label>
+            <select id="th-textFont">
+              <option value="Arial">Arial</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="theme.animType">Animasyon</label>
+            <select id="th-animType">
+              <option value="fade">Fade</option>
+              <option value="slide-up">Slide Up</option>
+              <option value="slide-down">Slide Down</option>
+              <option value="slide-left">Slide Left</option>
+              <option value="slide-right">Slide Right</option>
+              <option value="zoom-in">Zoom In</option>
+              <option value="zoom-out">Zoom Out</option>
+              <option value="bounce">Bounce</option>
+              <option value="pulse">Pulse</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="theme.animDuration">Animasyon Süresi (sn)</label>
+          <input type="number" id="th-animDuration" value="0.5" step="0.1" min="0.1" max="5" />
+        </div>
+        <div id="th-preview" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+          <div id="th-preview-title" style="font-size:20px;font-weight:700;margin-bottom:4px">Başlık Önizlemesi</div>
+          <div id="th-preview-text" style="font-size:14px">Metin önizlemesi</div>
+        </div>
+      </div>
+      <div class="dialog-foot">
+        <button id="theme-dlg-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
+        <button id="theme-dlg-delete" class="btn-danger" style="margin-right:auto" data-i18n="theme.delete">Temayı Sil</button>
+        <button id="theme-dlg-save" class="btn-primary" data-i18n="settings.save">Kaydet</button>
+      </div>
     </div>
   </div>
 

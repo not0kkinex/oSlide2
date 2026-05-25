@@ -2,13 +2,16 @@
   let ctxTarget = null;
   let favFilterActive = false;
   let settingsCache = {};
+  let activeTab = 'projects';
+  let themes = [];
+  let editingThemeId = null;
 
   async function render() {
     const projects = favFilterActive
       ? await ProjectManager.getFavorites()
       : await ProjectManager.getAll();
     const welcome = document.getElementById('welcome');
-    const mainView = document.getElementById('main-view');
+    const mainView = document.getElementById('page-projects');
     const grid = document.getElementById('projects-grid');
     const recent = document.getElementById('recent-section');
     const recentList = document.getElementById('recent-list');
@@ -107,6 +110,160 @@
     if (window.lucide) lucide.createIcons();
   }
 
+  function setThemePreview(th) {
+    const title = document.getElementById('th-preview-title')
+    const text = document.getElementById('th-preview-text')
+    const preview = document.getElementById('th-preview')
+    if (!title || !text || !preview) return
+    preview.style.background = th.canvasBg || '#ffffff'
+    title.style.color = th.titleColor || '#222'
+    title.style.fontFamily = th.titleFont || 'Arial'
+    text.style.color = th.textColor || '#333'
+    text.style.fontFamily = th.textFont || 'Arial'
+  }
+
+  async function renderThemes() {
+    themes = await ProjectManager.getThemes()
+    const grid = document.getElementById('themes-grid')
+    if (!grid) return
+    grid.innerHTML = ''
+    themes.forEach((th, i) => {
+      const card = document.createElement('div')
+      card.className = 'theme-card2'
+      card.style.animationDelay = (i * 0.04) + 's'
+      card.dataset.id = th.id
+
+      const preview = document.createElement('div')
+      preview.className = 'theme-card2-preview'
+      preview.style.background = th.canvasBg || '#ffffff'
+      preview.innerHTML = `<div class="th-preview-title" style="color:${th.titleColor||'#222'};font-family:${th.titleFont||'Arial'}">Aa</div><div class="th-preview-text" style="color:${th.textColor||'#333'};font-family:${th.textFont||'Arial'}">${esc(th.name)}</div>`
+
+      const body = document.createElement('div')
+      body.className = 'theme-card2-body'
+
+      const name = document.createElement('div')
+      name.className = 'theme-card2-name'
+      name.textContent = th.name
+
+      const actions = document.createElement('div')
+      actions.className = 'theme-card2-actions'
+      const editBtn = document.createElement('button')
+      editBtn.innerHTML = '<i data-lucide="pencil"></i>'
+      editBtn.title = 'Düzenle'
+      editBtn.onclick = (e) => { e.stopPropagation(); openThemeEditor(th.id) }
+      const dupBtn = document.createElement('button')
+      dupBtn.innerHTML = '<i data-lucide="copy"></i>'
+      dupBtn.title = 'Kopyala'
+      dupBtn.onclick = async (e) => { e.stopPropagation(); await duplicateTheme(th.id); renderThemes(); if (window.lucide) lucide.createIcons() }
+      const delBtn = document.createElement('button')
+      delBtn.className = 'th-del'
+      delBtn.innerHTML = '<i data-lucide="trash-2"></i>'
+      delBtn.title = 'Sil'
+      delBtn.onclick = (e) => { e.stopPropagation(); deleteTheme(th.id) }
+
+      actions.appendChild(editBtn)
+      actions.appendChild(dupBtn)
+      actions.appendChild(delBtn)
+      body.appendChild(name)
+      body.appendChild(actions)
+      card.appendChild(preview)
+      card.appendChild(body)
+      card.onclick = () => openThemeEditor(th.id)
+      grid.appendChild(card)
+    })
+    if (window.lucide) lucide.createIcons()
+  }
+
+  function switchTab(tab) {
+    activeTab = tab
+    document.querySelectorAll('.page-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab))
+    document.querySelectorAll('.page-content').forEach(c => c.classList.toggle('active', c.id === 'page-' + tab))
+    if (tab === 'themes') {
+      document.getElementById('welcome')?.classList.add('hidden')
+      renderThemes()
+    } else {
+      render()
+    }
+  }
+
+  async function openThemeEditor(id) {
+    editingThemeId = id
+    const th = id ? themes.find(t => t.id === id) : null
+    const title = document.getElementById('theme-dlg-title')
+    title.textContent = th ? I18n.t('theme.editTitle') : I18n.t('theme.newTitle')
+    document.getElementById('th-name').value = th ? th.name : ''
+    document.getElementById('th-canvasBg').value = th ? th.canvasBg : '#ffffff'
+    document.getElementById('th-titleColor').value = th ? th.titleColor : '#222222'
+    document.getElementById('th-textColor').value = th ? th.textColor : '#333333'
+    document.getElementById('th-titleFont').value = th ? th.titleFont : 'Arial'
+    document.getElementById('th-textFont').value = th ? th.textFont : 'Arial'
+    document.getElementById('th-animType').value = th ? th.animType : 'fade'
+    document.getElementById('th-animDuration').value = th ? th.animDuration : 0.5
+    const delBtn = document.getElementById('theme-dlg-delete')
+    delBtn.style.display = th ? '' : 'none'
+    updateThemePreview()
+    document.getElementById('theme-dlg-overlay').classList.remove('hidden')
+  }
+
+  function closeThemeEditor() {
+    document.getElementById('theme-dlg-overlay').classList.add('hidden')
+    editingThemeId = null
+  }
+
+  function getThemeFormValues() {
+    return {
+      name: document.getElementById('th-name').value.trim(),
+      canvasBg: document.getElementById('th-canvasBg').value,
+      titleColor: document.getElementById('th-titleColor').value,
+      textColor: document.getElementById('th-textColor').value,
+      titleFont: document.getElementById('th-titleFont').value,
+      textFont: document.getElementById('th-textFont').value,
+      animType: document.getElementById('th-animType').value,
+      animDuration: parseFloat(document.getElementById('th-animDuration').value) || 0.5
+    }
+  }
+
+  function updateThemePreview() {
+    const vals = getThemeFormValues()
+    setThemePreview(vals)
+  }
+
+  async function saveTheme() {
+    const vals = getThemeFormValues()
+    if (!vals.name) { alert('Tema adı gerekli'); return }
+    let list = [...themes]
+    if (editingThemeId) {
+      const idx = list.findIndex(t => t.id === editingThemeId)
+      if (idx !== -1) list[idx] = { ...list[idx], ...vals }
+    } else {
+      const id = 'th_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+      list.push({ id, ...vals })
+    }
+    await ProjectManager.saveThemes(list)
+    themes = list
+    closeThemeEditor()
+    renderThemes()
+    if (window.lucide) lucide.createIcons()
+  }
+
+  async function deleteTheme(id) {
+    if (!confirm('Bu temayı silmek istediğinize emin misiniz?')) return
+    let list = themes.filter(t => t.id !== id)
+    await ProjectManager.saveThemes(list)
+    themes = list
+    renderThemes()
+    if (window.lucide) lucide.createIcons()
+  }
+
+  async function duplicateTheme(id) {
+    const th = themes.find(t => t.id === id)
+    if (!th) return
+    const newId = 'th_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+    const copy = { ...th, id: newId, name: th.name + ' (Kopya)' }
+    themes.push(copy)
+    await ProjectManager.saveThemes(themes)
+  }
+
   function bindEvents() {
     document.getElementById('new-project-btn')?.addEventListener('click', showNewDialog);
     document.getElementById('welcome-new-btn')?.addEventListener('click', showNewDialog);
@@ -137,6 +294,22 @@
     });
 
     document.getElementById('import-file-btn')?.addEventListener('click', importProject);
+
+    document.querySelectorAll('.page-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.dataset.tab))
+    })
+
+    document.getElementById('new-theme-btn')?.addEventListener('click', () => openThemeEditor(null))
+    document.getElementById('theme-dlg-close')?.addEventListener('click', closeThemeEditor)
+    document.getElementById('theme-dlg-cancel')?.addEventListener('click', closeThemeEditor)
+    document.getElementById('theme-dlg-save')?.addEventListener('click', saveTheme)
+    document.getElementById('theme-dlg-delete')?.addEventListener('click', async () => {
+      if (editingThemeId) await deleteTheme(editingThemeId)
+    })
+    document.querySelectorAll('#theme-dlg-body input, #theme-dlg-body select').forEach(el => {
+      el.addEventListener('input', updateThemePreview)
+      el.addEventListener('change', updateThemePreview)
+    })
 
     document.getElementById('ctx-menu')?.addEventListener('click', async (e) => {
       const item = e.target.closest('.ctx-item');
