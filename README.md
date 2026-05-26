@@ -18,6 +18,12 @@
 
 See [GitHub Releases](https://github.com/not0kkinex/oSlide2/releases) for downloads and changelog.
 
+### v0.1.1 (2026-05-26)
+
+- Simplified toolbar — removed non-functional icon buttons
+- Updated app icon: black-to-yellow gradient, bold O letter with accents, rounded corners, drop shadows
+- v0.1.1 portable EXE
+
 ### v0.1.0 (2026-05-26)
 
 - Portable single-file EXE (self-signed) — no install required
@@ -72,7 +78,7 @@ npm start
 npm run build
 ```
 
-Output: `dist/oSlide2 0.1.0.exe` — Portable executable (self-signed, no install required)
+Output: `dist/oSlide2 0.1.1.exe` — Portable executable (self-signed, no install required)
 
 ## Project Structure
 
