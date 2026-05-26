@@ -1,6 +1,6 @@
 {
   "app.name": "oSlide2",
-  "app.version": "v1.0",
+  "app.version": "v0.0.1",
 
   "home.title": "oSlide2'ye Hoş Geldiniz",
   "home.subtitle": "Yeni bir sunum oluşturun veya mevcut projeyi açın.",
@@ -141,10 +141,10 @@
   "presentation.hint": "Ok tuşları ile gezin • ESC çıkış",
 
   "time.justNow": "Az önce",
-  "time.minutes": "dk önce",
-  "time.hours": "saat önce",
-  "time.days": "gün önce",
-  "time.weeks": "hafta önce",
+  "time.minutes": "{0} dk önce",
+  "time.hours": "{0} saat önce",
+  "time.days": "{0} gün önce",
+  "time.weeks": "{0} hafta önce",
 
   "template.blank": "Boş Proje",
   "template.business": "İş Sunumu",
@@ -189,5 +189,32 @@
   "context.copy": "Kopyala",
   "context.paste": "Yapıştır",
   "context.bringForward": "Öne Getir",
-  "context.sendBackward": "Arkaya Gönder"
+  "context.sendBackward": "Arkaya Gönder",
+
+  "theme.sunset": "Gün Batımı",
+  "theme.nameRequired": "Tema adı gerekli",
+  "theme.copySuffix": " (Kopya)",
+  "theme.previewTitle": "Başlık Önizlemesi",
+  "theme.previewText": "Metin önizlemesi",
+
+  "confirm.deleteTheme": "Bu temayı silmek istediğinize emin misiniz?",
+
+  "project.theme": "Tema",
+  "project.duplicateSuffix": " (Kopya)",
+
+  "editor.applyTheme": "Tema Uygula",
+  "editor.defaultFilename": "sunum",
+
+  "presentation.noData": "Veri yok",
+
+  "autosave.30sec": "30 saniye",
+  "autosave.1min": "1 dakika",
+  "autosave.2min": "2 dakika",
+  "autosave.5min": "5 dakika",
+
+  "lang.tr": "Türkçe",
+  "lang.en": "English",
+
+  "toolbar.theme": "Tema",
+  "toolbar.edit": "Düzenle"
 }

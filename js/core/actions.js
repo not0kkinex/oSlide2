@@ -56,11 +56,11 @@ function addEl(type, props) {
     el.animType = th.animType
     el.animDuration = th.animDuration
   }
-  if (type === 'title' && !el.content) el.content = 'Başlık';
-  if (type === 'text' && !el.content) el.content = 'Metin';
+  if (type === 'title' && !el.content) el.content = I18n.t('element.title');
+  if (type === 'text' && !el.content) el.content = I18n.t('element.text');
   if (type === 'image' && !el.src) {
     el.src = 'data:image/svg+xml,' + encodeURIComponent(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#eee" width="400" height="300"/><text fill="#999" font-size="20" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">Resim</text></svg>'
+      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#eee" width="400" height="300"/><text fill="#999" font-size="20" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle">' + I18n.t('toolbar.image') + '</text></svg>'
     );
   }
   s.elements.push(el);

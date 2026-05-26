@@ -153,16 +153,16 @@
       actions.className = 'theme-card2-actions'
       const editBtn = document.createElement('button')
       editBtn.innerHTML = '<i data-lucide="pencil"></i>'
-      editBtn.title = 'Düzenle'
+      editBtn.title = I18n.t('toolbar.edit')
       editBtn.onclick = (e) => { e.stopPropagation(); openThemeEditor(th.id) }
       const dupBtn = document.createElement('button')
       dupBtn.innerHTML = '<i data-lucide="copy"></i>'
-      dupBtn.title = 'Kopyala'
+      dupBtn.title = I18n.t('context.duplicate')
       dupBtn.onclick = async (e) => { e.stopPropagation(); await duplicateTheme(th.id); renderThemes(); if (window.lucide) lucide.createIcons() }
       const delBtn = document.createElement('button')
       delBtn.className = 'th-del'
       delBtn.innerHTML = '<i data-lucide="trash-2"></i>'
-      delBtn.title = 'Sil'
+      delBtn.title = I18n.t('context.delete')
       delBtn.onclick = (e) => { e.stopPropagation(); deleteTheme(th.id) }
 
       actions.appendChild(editBtn)
@@ -234,7 +234,7 @@
 
   async function saveTheme() {
     const vals = getThemeFormValues()
-    if (!vals.name) { alert('Tema adı gerekli'); return }
+    if (!vals.name) { alert(I18n.t('theme.nameRequired')); return }
     let list = [...themes]
     if (editingThemeId) {
       const idx = list.findIndex(t => t.id === editingThemeId)
@@ -251,7 +251,7 @@
   }
 
   async function deleteTheme(id) {
-    if (!confirm('Bu temayı silmek istediğinize emin misiniz?')) return
+    if (!confirm(I18n.t('confirm.deleteTheme'))) return
     let list = themes.filter(t => t.id !== id)
     await ProjectManager.saveThemes(list)
     themes = list
@@ -263,7 +263,7 @@
     const th = themes.find(t => t.id === id)
     if (!th) return
     const newId = 'th_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-    const copy = { ...th, id: newId, name: th.name + ' (Kopya)' }
+    const copy = { ...th, id: newId, name: th.name + I18n.t('theme.copySuffix') }
     themes.push(copy)
     await ProjectManager.saveThemes(themes)
   }
@@ -548,7 +548,7 @@
     recent.classList.add('hidden');
     grid.innerHTML = '';
     if (results.length === 0) {
-      grid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>Sonuç bulunamadı</p></div>';
+      grid.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>' + I18n.t('home.noResults') + '</p></div>';
       return;
     }
     results.forEach((p, i) => {
@@ -575,7 +575,7 @@
       const info = document.createElement('div');
       info.className = 'card-info';
       const favIcon = p.favorite ? '⭐ ' : '';
-      info.innerHTML = `<div class="card-name">${favIcon}${esc(p.name)}</div><div class="card-meta">${p.slideCount || 0} slide • ${timeAgo(p.lastModified)}</div>`;
+      info.innerHTML = `<div class="card-name">${favIcon}${esc(p.name)}</div><div class="card-meta">${p.slideCount || 0} ${I18n.t('project.slide')} • ${timeAgo(p.lastModified)}</div>`;
 
       card.appendChild(starBtn);
       card.appendChild(thumb);
@@ -658,6 +658,7 @@
     settingsCache = s;
     ThemeManager.setTheme(s.theme);
     I18n.setLocale(s.language || 'tr');
+    localStorage.setItem('oslide2_locale', s.language || 'tr');
     closeSettings();
   }
 
@@ -698,15 +699,15 @@
     const then = new Date(dateStr).getTime();
     const diff = now - then;
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Az önce';
-    if (mins < 60) return `${mins} dk önce`;
+    if (mins < 1) return I18n.t('time.justNow');
+    if (mins < 60) return I18n.t('time.minutes', String(mins));
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} saat önce`;
+    if (hours < 24) return I18n.t('time.hours', String(hours));
     const days = Math.floor(hours / 24);
-    if (days < 7) return `${days} gün önce`;
+    if (days < 7) return I18n.t('time.days', String(days));
     const weeks = Math.floor(days / 7);
-    if (weeks < 5) return `${weeks} hafta önce`;
-    return new Date(dateStr).toLocaleDateString('tr-TR');
+    if (weeks < 5) return I18n.t('time.weeks', String(weeks));
+    return new Date(dateStr).toLocaleDateString(I18n.locale);
   }
 
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }

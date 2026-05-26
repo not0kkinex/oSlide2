@@ -1,6 +1,6 @@
 {
   "app.name": "oSlide2",
-  "app.version": "v1.0",
+  "app.version": "v0.0.1",
 
   "home.title": "Welcome to oSlide2",
   "home.subtitle": "Create a new presentation or open an existing project.",
@@ -141,10 +141,10 @@
   "presentation.hint": "Arrow keys to navigate • ESC to exit",
 
   "time.justNow": "Just now",
-  "time.minutes": "min ago",
-  "time.hours": "hours ago",
-  "time.days": "days ago",
-  "time.weeks": "weeks ago",
+  "time.minutes": "{0} min ago",
+  "time.hours": "{0} hours ago",
+  "time.days": "{0} days ago",
+  "time.weeks": "{0} weeks ago",
 
   "template.blank": "Blank Project",
   "template.business": "Business",
@@ -189,5 +189,32 @@
   "context.copy": "Copy",
   "context.paste": "Paste",
   "context.bringForward": "Bring Forward",
-  "context.sendBackward": "Send Backward"
+  "context.sendBackward": "Send Backward",
+
+  "theme.sunset": "Sunset",
+  "theme.nameRequired": "Theme name required",
+  "theme.copySuffix": " (Copy)",
+  "theme.previewTitle": "Title Preview",
+  "theme.previewText": "Text preview",
+
+  "confirm.deleteTheme": "Are you sure you want to delete this theme?",
+
+  "project.theme": "Theme",
+  "project.duplicateSuffix": " (Copy)",
+
+  "editor.applyTheme": "Apply Theme",
+  "editor.defaultFilename": "presentation",
+
+  "presentation.noData": "No data",
+
+  "autosave.30sec": "30 seconds",
+  "autosave.1min": "1 minute",
+  "autosave.2min": "2 minutes",
+  "autosave.5min": "5 minutes",
+
+  "lang.tr": "Türkçe",
+  "lang.en": "English",
+
+  "toolbar.theme": "Theme",
+  "toolbar.edit": "Edit"
 }

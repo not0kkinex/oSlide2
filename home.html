@@ -210,8 +210,8 @@
           <input type="number" id="th-animDuration" value="0.5" step="0.1" min="0.1" max="5" />
         </div>
         <div id="th-preview" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
-          <div id="th-preview-title" style="font-size:20px;font-weight:700;margin-bottom:4px">Başlık Önizlemesi</div>
-          <div id="th-preview-text" style="font-size:14px">Metin önizlemesi</div>
+          <div id="th-preview-title" style="font-size:20px;font-weight:700;margin-bottom:4px" data-i18n="theme.previewTitle">Başlık Önizlemesi</div>
+          <div id="th-preview-text" style="font-size:14px" data-i18n="theme.previewText">Metin önizlemesi</div>
         </div>
       </div>
       <div class="dialog-foot">
@@ -258,8 +258,8 @@
           <div class="sg">
             <label class="sg-label" data-i18n="settings.language">Dil</label>
             <select id="set-language">
-              <option value="tr">Türkçe</option>
-              <option value="en">English</option>
+              <option value="tr" data-i18n="lang.tr">Türkçe</option>
+              <option value="en" data-i18n="lang.en">English</option>
             </select>
           </div>
           <div class="sg">
@@ -271,10 +271,10 @@
           <div class="sg" id="sg-autosave-interval">
             <label class="sg-label" data-i18n="settings.autoSaveInterval">Kaydetme Aralığı</label>
             <select id="set-autosave-interval">
-              <option value="30">30 saniye</option>
-              <option value="60">1 dakika</option>
-              <option value="120">2 dakika</option>
-              <option value="300">5 dakika</option>
+              <option value="30" data-i18n="autosave.30sec">30 saniye</option>
+              <option value="60" data-i18n="autosave.1min">1 dakika</option>
+              <option value="120" data-i18n="autosave.2min">2 dakika</option>
+              <option value="300" data-i18n="autosave.5min">5 dakika</option>
             </select>
           </div>
           <div class="sg">
@@ -355,18 +355,18 @@
         <!-- Shortcuts -->
         <div class="settings-tab-content" id="tab-shortcuts">
           <div class="shortcuts-list">
-            <div class="sc-item"><span class="sc-key">Ctrl+Z</span><span class="sc-desc">Geri Al</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+Y</span><span class="sc-desc">İleri Al</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+S</span><span class="sc-desc">Kaydet</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+C</span><span class="sc-desc">Kopyala</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+V</span><span class="sc-desc">Yapıştır</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+B</span><span class="sc-desc">Kalın</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+I</span><span class="sc-desc">İtalik</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+U</span><span class="sc-desc">Altı Çizili</span></div>
-            <div class="sc-item"><span class="sc-key">Delete</span><span class="sc-desc">Seçili Öğeyi Sil</span></div>
-            <div class="sc-item"><span class="sc-key">F5</span><span class="sc-desc">Sunumu Başlat</span></div>
-            <div class="sc-item"><span class="sc-key">Ctrl+1..9</span><span class="sc-desc">Projeleri Hızlı Aç</span></div>
-            <div class="sc-item"><span class="sc-key">Escape</span><span class="sc-desc">Dialog/Menü Kapat</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+Z</span><span class="sc-desc" data-i18n="shortcuts.undo">Geri Al</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+Y</span><span class="sc-desc" data-i18n="shortcuts.redo">İleri Al</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+S</span><span class="sc-desc" data-i18n="shortcuts.save">Kaydet</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+C</span><span class="sc-desc" data-i18n="shortcuts.copy">Kopyala</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+V</span><span class="sc-desc" data-i18n="shortcuts.paste">Yapıştır</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+B</span><span class="sc-desc" data-i18n="shortcuts.bold">Kalın</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+I</span><span class="sc-desc" data-i18n="shortcuts.italic">İtalik</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+U</span><span class="sc-desc" data-i18n="shortcuts.underline">Altı Çizili</span></div>
+            <div class="sc-item"><span class="sc-key">Delete</span><span class="sc-desc" data-i18n="shortcuts.delete">Seçili Öğeyi Sil</span></div>
+            <div class="sc-item"><span class="sc-key">F5</span><span class="sc-desc" data-i18n="shortcuts.presentation">Sunumu Başlat</span></div>
+            <div class="sc-item"><span class="sc-key">Ctrl+1..9</span><span class="sc-desc" data-i18n="shortcuts.quickOpen">Projeleri Hızlı Aç</span></div>
+            <div class="sc-item"><span class="sc-key">Escape</span><span class="sc-desc" data-i18n="shortcuts.close">Dialog/Menü Kapat</span></div>
           </div>
         </div>
         <!-- About -->

@@ -21,7 +21,7 @@ async function addImage() {
 }
 
 function newProject() {
-  if (App.dirty && !confirm('Kaydedilmemiş değişiklikler var. Yeni proje?')) return;
+  if (App.dirty && !confirm(I18n.t('editor.unsavedChanges'))) return;
   App.slides = [{
     id: 's1', background: '#ffffff', transition: 'fade', elements: [
       { id: id(), type: 'text', content: 'oSlide2', x: 180, y: 160, width: 600, height: 100, fontSize: 64, fontFamily: 'Arial', color: '#222', bold: true, italic: false, underline: false, strikethrough: false, textAlign: 'center', bgColor: '', opacity: 1, rotation: 0 },
@@ -85,7 +85,7 @@ function saveFallback() {
   const b = new Blob([JSON.stringify(getData(), null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(b);
-  a.download = 'sunum.slidelab';
+  a.download = I18n.t('editor.defaultFilename') + '.slidelab';
   a.click();
   URL.revokeObjectURL(a);
 }
@@ -191,7 +191,7 @@ function loadProjectData(d) {
   if (d._projectName) App.projectName = d._projectName;
   if (d._projectTheme) App.projectTheme = d._projectTheme;
   loadData(d);
-  const name = d._projectName || 'Proje';
+  const name = d._projectName || I18n.t('editor.untitled');
   document.title = `oSlide2 - ${name}`;
 }
 
@@ -265,6 +265,7 @@ async function saveSettings() {
   settingsCache = s;
   ThemeManager.setTheme(s.theme);
   I18n.setLocale(s.language || 'tr');
+  localStorage.setItem('oslide2_locale', s.language || 'tr');
   if (window.setSnapEnabled) window.setSnapEnabled(s.snapToGrid !== false)
   closeSettings();
 }
@@ -423,10 +424,10 @@ function init() {
       'bold', 'italic', 'underline', 'delete', 'presentation', 'close'
     ];
     const labels = {
-      undo: 'Geri Al', redo: 'İleri Al', save: 'Kaydet',
-      copy: 'Kopyala', paste: 'Yapıştır',
-      bold: 'Kalın', italic: 'İtalik', underline: 'Altı Çizili',
-      delete: 'Sil', presentation: 'Sunumu Başlat', close: 'Kapat'
+      undo: I18n.t('shortcuts.undo'), redo: I18n.t('shortcuts.redo'), save: I18n.t('shortcuts.save'),
+      copy: I18n.t('shortcuts.copy'), paste: I18n.t('shortcuts.paste'),
+      bold: I18n.t('shortcuts.bold'), italic: I18n.t('shortcuts.italic'), underline: I18n.t('shortcuts.underline'),
+      delete: I18n.t('shortcuts.delete'), presentation: I18n.t('shortcuts.presentation'), close: I18n.t('shortcuts.close')
     };
     for (const action of actions) {
       const binding = ShortcutManager.bindings[action];

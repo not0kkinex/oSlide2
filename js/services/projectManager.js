@@ -108,7 +108,7 @@ const ProjectManager = {
     if (!p) return null;
     const newId = 'proj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const now = new Date().toISOString();
-    const dup = { ...p, id: newId, name: p.name + ' (Kopya)', created: now, lastModified: now, path: null, favorite: false };
+    const dup = { ...p, id: newId, name: p.name + I18n.t('project.duplicateSuffix'), created: now, lastModified: now, path: null, favorite: false };
     if (p.path && window.electronAPI?.duplicateFile) {
       const newPath = await window.electronAPI.duplicateFile({ sourcePath: p.path, newId, name: dup.name });
       if (newPath) dup.path = newPath;
