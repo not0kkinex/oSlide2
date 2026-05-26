@@ -391,11 +391,33 @@
     </div>
   </div>
 
+  <div id="dev-console" class="hidden">
+    <div class="dc-head">
+      <span>Dev Console</span>
+      <button id="dc-close"><i data-lucide="x"></i></button>
+    </div>
+    <div class="dc-body">
+      <div class="dc-section">
+        <div class="dc-label">Commands</div>
+        <input type="text" id="dc-input" placeholder="Type JS expression...">
+      </div>
+      <div class="dc-section">
+        <div class="dc-label">Output</div>
+        <pre id="dc-output"></pre>
+      </div>
+      <div class="dc-section">
+        <div class="dc-label">State</div>
+        <pre id="dc-state"></pre>
+      </div>
+    </div>
+  </div>
+
   <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
   <script src="js/services/theme.js"></script>
   <script src="js/services/i18n.js"></script>
   <script src="js/services/shortcuts.js"></script>
   <script src="js/services/projectManager.js"></script>
   <script src="js/pages/home.js"></script>
+  <script src="js/services/console.js"></script>
 </body>
 </html>
