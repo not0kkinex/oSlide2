@@ -403,11 +403,11 @@
     const template = document.getElementById('template-select').value;
     const themeId = document.getElementById('project-theme-select')?.value
     closeDialog();
-    const result = await ProjectManager.create(name, template);
+    let appliedTheme = null
     if (result && themeId) {
       const themes = await ProjectManager.getThemes()
-      const th = themes.find(t => t.id === themeId)
-      if (th) applyThemeToData(result.slideData, th)
+      appliedTheme = themes.find(t => t.id === themeId)
+      if (appliedTheme) applyThemeToData(result.slideData, appliedTheme)
     }
     if (result && window.electronAPI) {
       if (window.electronAPI.createProjectFile) {
@@ -426,7 +426,7 @@
         const thumb = await window.electronAPI.generateThumbnail(result.slideData.slides[0])
         if (thumb) { result.project.thumbnail = thumb; await ProjectManager.save() }
       }
-      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name });
+      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name, _projectTheme: appliedTheme });
     }
   }
 

@@ -1,7 +1,7 @@
 const CoreState = {
   slides: [], cur: 0, theme: 'default', sel: null, path: null,
   dirty: false, undo: [], redo: [], maxUndo: 50, _eid: 1, clipboard: null,
-  projectId: null, projectName: null
+  projectId: null, projectName: null, projectTheme: null
 };
 
 let _eidCounter = 1;

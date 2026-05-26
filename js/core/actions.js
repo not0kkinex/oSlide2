@@ -1,6 +1,7 @@
 function addSlide() {
   save();
-  App.slides.splice(App.cur + 1, 0, { id: 's' + Date.now(), background: '#ffffff', elements: [], transition: 'fade' });
+  const bg = App.projectTheme?.canvasBg || '#ffffff'
+  App.slides.splice(App.cur + 1, 0, { id: 's' + Date.now(), background: bg, elements: [], transition: 'fade' });
   selectSlide(App.cur + 1);
 }
 
@@ -45,6 +46,16 @@ function addEl(type, props) {
   const s = slide();
   if (!s) return;
   const el = { id: id(), type, x: 120, y: 80, width: 200, height: 60, ...EL_DEFAULTS[type] || {}, ...props };
+  if (App.projectTheme) {
+    const th = App.projectTheme
+    if (type === 'text' || type === 'title') {
+      const isTitle = type === 'title'
+      el.color = isTitle ? th.titleColor : th.textColor
+      el.fontFamily = isTitle ? th.titleFont : th.textFont
+    }
+    el.animType = th.animType
+    el.animDuration = th.animDuration
+  }
   if (type === 'title' && !el.content) el.content = 'Başlık';
   if (type === 'text' && !el.content) el.content = 'Metin';
   if (type === 'image' && !el.src) {

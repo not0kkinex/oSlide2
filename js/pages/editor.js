@@ -34,6 +34,7 @@ function newProject() {
   App.dirty = false;
   App.undo = [];
   App.redo = [];
+  App.projectTheme = null;
   renderAll();
   hidePanel();
 }
@@ -163,6 +164,7 @@ async function showThemePicker() {
 function applyEditorTheme(themeId) {
   const th = editorThemes.find(t => t.id === themeId)
   if (!th) return
+  App.projectTheme = th
   save()
   for (const s of App.slides) {
     s.background = th.canvasBg
@@ -187,6 +189,7 @@ function closeThemePicker() {
 function loadProjectData(d) {
   if (d._projectId) App.projectId = d._projectId;
   if (d._projectName) App.projectName = d._projectName;
+  if (d._projectTheme) App.projectTheme = d._projectTheme;
   loadData(d);
   const name = d._projectName || 'Proje';
   document.title = `oSlide2 - ${name}`;
