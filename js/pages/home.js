@@ -427,7 +427,7 @@
         const thumb = await window.electronAPI.generateThumbnail(result.slideData.slides[0])
         if (thumb) { result.project.thumbnail = thumb; await ProjectManager.save() }
       }
-      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name, _projectTheme: appliedTheme });
+      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name, _projectPath: result.project.path, _projectTheme: appliedTheme });
     }
   }
 
@@ -442,7 +442,7 @@
       }
     }
     if (window.electronAPI) {
-      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name });
+      window.electronAPI.openEditor({ ...result.slideData, _projectId: result.project.id, _projectName: result.project.name, _projectPath: result.project.path });
     } else {
       localStorage.setItem('presentationData', JSON.stringify(result.slideData));
       localStorage.setItem('oslide2_currentProject', JSON.stringify(result.project));

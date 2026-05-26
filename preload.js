@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   returnHome: () => ipcRenderer.invoke('return-home'),
 
   // File operations
-  saveFile: (data) => ipcRenderer.invoke('save-file', data),
+  saveFile: (data, path) => ipcRenderer.invoke('save-file', data, path),
   saveFileAs: (data) => ipcRenderer.invoke('save-file-as', data),
   openFileDialog: () => ipcRenderer.invoke('open-file-dialog'),
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),

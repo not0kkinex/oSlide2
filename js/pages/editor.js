@@ -1,4 +1,23 @@
 let settingsCache = {};
+let autoSaveTimer = null;
+
+function startAutoSave() {
+  if (autoSaveTimer) clearInterval(autoSaveTimer)
+  autoSaveTimer = null
+  ;(async () => {
+    if (window.electronAPI) {
+      const cfg = await window.electronAPI.getConfig()
+      if (cfg.settings?.autoSave !== false) {
+        const interval = (cfg.settings?.autoSaveInterval || 60) * 1000
+        autoSaveTimer = setInterval(() => { if (App.dirty) saveProject() }, interval)
+      }
+    }
+  })()
+}
+
+function stopAutoSave() {
+  if (autoSaveTimer) { clearInterval(autoSaveTimer); autoSaveTimer = null }
+}
 
 async function addImage() {
   if (window.electronAPI?.openImageDialog) {
@@ -35,6 +54,7 @@ function newProject() {
   App.undo = [];
   App.redo = [];
   App.projectTheme = null;
+  startAutoSave();
   renderAll();
   hidePanel();
 }
@@ -57,7 +77,7 @@ function loadData(d) {
 async function saveProject() {
   if (!window.electronAPI) return saveFallback();
   if (!App.path) return await saveProjectAs();
-  const result = await window.electronAPI.saveFile(getData());
+  const result = await window.electronAPI.saveFile(getData(), App.path);
   if (result) App.path = result;
   App.dirty = false;
   await updateProjectMeta();
@@ -190,9 +210,11 @@ function loadProjectData(d) {
   if (d._projectId) App.projectId = d._projectId;
   if (d._projectName) App.projectName = d._projectName;
   if (d._projectTheme) App.projectTheme = d._projectTheme;
+  if (d._projectPath) App.path = d._projectPath;
   loadData(d);
   const name = d._projectName || I18n.t('editor.untitled');
   document.title = `oSlide2 - ${name}`;
+  startAutoSave();
 }
 
 function setSettingField(id, value) {
@@ -267,6 +289,7 @@ async function saveSettings() {
   I18n.setLocale(s.language || 'tr');
   localStorage.setItem('oslide2_locale', s.language || 'tr');
   if (window.setSnapEnabled) window.setSnapEnabled(s.snapToGrid !== false)
+  startAutoSave()
   closeSettings();
 }
 

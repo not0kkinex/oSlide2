@@ -257,7 +257,11 @@ ipcMain.handle('return-home', () => {
   return true;
 });
 
-ipcMain.handle('save-file', async (event, data) => {
+ipcMain.handle('save-file', async (event, data, filePath) => {
+  if (filePath) {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    return filePath;
+  }
   const result = await dialog.showSaveDialog(editorWindow || homeWindow, {
     filters: [{ name: 'Slide Projesi', extensions: ['slidelab'] }]
   });
