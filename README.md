@@ -18,6 +18,19 @@
 
 See [GitHub Releases](https://github.com/not0kkinex/oSlide2/releases) for downloads and changelog.
 
+### v0.2.0 (2026-05-27)
+
+- **Editor redesign** — 5-group topbar, canvas ruler, zoom bar, AI FAB, status bar, panel tabs (Element/Slide/Animation), redesigned settings panel
+- **Home screen redesign** — sidebar navigation, topbar search, 4-column card grid, list view, empty state
+- **Light mode** — full light/dark theme support for both home and editor pages
+- **Inno Setup installer** — dark-themed setup wizard with Turkish/English, custom bitmaps, gold accent (#FFD700)
+- **Security fixes** — `renderMD()` XSS fix (href protocol whitelist), `--allow-file-access-from-files` removed, `structuredClone()` instead of `JSON.parse(JSON.stringify())`
+- **Editor refactor** — split `editor.js` into `ai-ui.js` and `export.js`
+- **i18n updates** — new home screen keys, version bumped in locale files
+- **Zoom** — range 0.25–3, step 0.1, CSS transform scaling
+- **Status bar** — save status dot (red/green), slide count, element count
+- **Project filename** — displays actual project name in topbar
+
 ### v0.1.1 (2026-05-26)
 
 - Simplified toolbar — removed non-functional icon buttons
@@ -78,7 +91,7 @@ npm start
 npm run build
 ```
 
-Output: `dist/oSlide2 0.1.1.exe` — Portable executable (self-signed, no install required)
+Output: `dist/win-unpacked/oSlide2.exe` — Portable app (package with your own distributable)
 
 ## Project Structure
 
