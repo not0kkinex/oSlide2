@@ -2,7 +2,7 @@
 function addSlide() {
   save();
   const bg = App.projectTheme?.canvasBg || '#ffffff'
-  App.slides.splice(App.cur + 1, 0, { id: 's' + Date.now(), background: bg, elements: [], transition: 'fade' });
+  App.slides.splice(App.cur + 1, 0, { id: 's' + Date.now(), background: bg, elements: [], transition: 'fade', notes: '' });
   selectSlide(App.cur + 1);
 }
 

@@ -1,3 +1,5 @@
+let dragSrcIdx = null;
+
 /**
  * Generates a content cache key for an element
  * @param {Object} el - Element data
@@ -207,15 +209,35 @@ function renderThumbs() {
       const inner = document.createElement('div');
       inner.className = 'thumb-inner';
       t.appendChild(inner);
-      t.onclick = () => selectSlide(i);
-      t.ondragstart = e => { e.dataTransfer.setData('text/plain', i); t.classList.add('drag-over'); };
-      t.ondragend = () => t.classList.remove('drag-over');
-      t.ondragover = e => e.preventDefault();
-      t.ondrop = e => {
+      t.addEventListener('dragstart', e => {
+        dragSrcIdx = i;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => t.classList.add('dragging'), 0);
+      });
+      t.addEventListener('dragend', () => {
+        t.classList.remove('dragging');
+        document.querySelectorAll('.slide-thumb')
+          .forEach(el => el.classList.remove('drag-over'));
+        dragSrcIdx = null;
+      });
+      t.addEventListener('dragover', e => {
         e.preventDefault();
-        const f = parseInt(e.dataTransfer.getData('text/plain'));
-        if (f !== i) moveSlide(f, i);
-      };
+        e.dataTransfer.dropEffect = 'move';
+        document.querySelectorAll('.slide-thumb')
+          .forEach(el => el.classList.remove('drag-over'));
+        t.classList.add('drag-over');
+      });
+      t.addEventListener('dragleave', () => {
+        t.classList.remove('drag-over');
+      });
+      t.addEventListener('drop', e => {
+        e.preventDefault();
+        t.classList.remove('drag-over');
+        if (dragSrcIdx === null || dragSrcIdx === i) return;
+        moveSlide(dragSrcIdx, i);
+        dragSrcIdx = null;
+      });
+      t.onclick = () => selectSlide(i);
       if (i < list.children.length) list.insertBefore(t, list.children[i]);
       else list.appendChild(t);
     }
@@ -264,7 +286,7 @@ function escThumb(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-/** Full re-render: slide + thumbnails + toolbar + status @returns {void} */
+/** Full re-render: slide + thumbnails + toolbar + status + notes @returns {void} */
 function renderAll() {
   renderSlide();
   renderThumbs();
@@ -272,6 +294,7 @@ function renderAll() {
   const bgInput = document.getElementById('slide-bg-color');
   if (bgInput) bgInput.value = slide()?.background || '#ffffff';
   if (window.updateStatusBar) window.updateStatusBar();
+  if (typeof syncNotes === 'function') syncNotes();
 }
 
 /** Updates toolbar button states based on selection @returns {void} */

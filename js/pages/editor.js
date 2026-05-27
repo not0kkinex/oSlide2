@@ -134,6 +134,100 @@ function loadProjectData(d) {
   startAutoSave();
 }
 
+const SLIDE_TEMPLATES = [
+  {
+    id: 'blank',
+    label: 'Boş',
+    icon: 'square',
+    elements: []
+  },
+  {
+    id: 'title-only',
+    label: 'Sadece Başlık',
+    icon: 'type',
+    elements: [
+      { type: 'title', content: 'Başlık', x: 60, y: 180,
+        width: 840, height: 80, fontSize: 52, textAlign: 'center',
+        bold: true }
+    ]
+  },
+  {
+    id: 'title-text',
+    label: 'Başlık + Metin',
+    icon: 'layout-list',
+    elements: [
+      { type: 'title', content: 'Başlık', x: 60, y: 60,
+        width: 840, height: 70, fontSize: 40, bold: true },
+      { type: 'text', content: 'İçerik metni buraya gelecek.',
+        x: 60, y: 150, width: 840, height: 300, fontSize: 20 }
+    ]
+  },
+  {
+    id: 'two-column',
+    label: 'İki Sütun',
+    icon: 'columns',
+    elements: [
+      { type: 'title', content: 'Başlık', x: 60, y: 40,
+        width: 840, height: 60, fontSize: 36, bold: true },
+      { type: 'text', content: 'Sol sütun metni.',
+        x: 60, y: 120, width: 390, height: 340, fontSize: 16 },
+      { type: 'text', content: 'Sağ sütun metni.',
+        x: 510, y: 120, width: 390, height: 340, fontSize: 16 }
+    ]
+  },
+  {
+    id: 'section',
+    label: 'Bölüm Başlığı',
+    icon: 'bookmark',
+    elements: [
+      { type: 'title', content: 'Bölüm', x: 60, y: 200,
+        width: 840, height: 80, fontSize: 56, textAlign: 'center',
+        bold: true },
+      { type: 'text', content: 'Alt başlık',
+        x: 60, y: 300, width: 840, height: 40, fontSize: 22,
+        textAlign: 'center' }
+    ]
+  }
+]
+
+function applyTemplate(templateId) {
+  const tpl = SLIDE_TEMPLATES.find(t => t.id === templateId);
+  if (!tpl) return;
+  save();
+  const bg = App.projectTheme?.canvasBg || '#ffffff';
+  const s = {
+    id: 's' + Date.now(),
+    background: bg,
+    elements: tpl.elements.map(el => ({
+      ...EL_DEFAULTS[el.type] || {},
+      ...el,
+      id: id()
+    })),
+    transition: 'fade',
+    notes: ''
+  };
+  App.slides.splice(App.cur + 1, 0, s);
+  selectSlide(App.cur + 1);
+  closeTemplateModal();
+}
+
+function openTemplateModal() {
+  const grid = document.getElementById('template-grid');
+  if (!grid) return;
+  grid.innerHTML = SLIDE_TEMPLATES.map(t => `
+    <div class="tpl-card" onclick="applyTemplate('${t.id}')">
+      <i data-lucide="${t.icon}"></i>
+      <span>${t.label}</span>
+    </div>
+  `).join('');
+  if (window.lucide) lucide.createIcons();
+  document.getElementById('template-overlay')?.classList.remove('hidden');
+}
+
+function closeTemplateModal() {
+  document.getElementById('template-overlay')?.classList.add('hidden');
+}
+
 function updateStatusBar() {
   const saveEl = document.getElementById('sb-save-status')
   if (saveEl) saveEl.textContent = App.dirty ? 'Kaydedilmedi' : 'Kaydedildi'
@@ -183,6 +277,32 @@ function initShortcuts() {
       delEl();
       return;
     }
+
+    // New slide (always works)
+    if (e.ctrlKey && e.shiftKey && e.key === 'N') {
+      e.preventDefault();
+      openTemplateModal();
+      return;
+    }
+
+    // Slide navigation — only when not typing in input/textarea
+    const tag = document.activeElement?.tagName;
+    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA'
+      || document.activeElement?.isContentEditable;
+    if (!isTyping) {
+      if (e.key === 'ArrowUp' || (e.key === 'ArrowLeft' && !e.shiftKey)) {
+        if (App.cur > 0) { e.preventDefault(); selectSlide(App.cur - 1); return; }
+      }
+      if (e.key === 'ArrowDown' || (e.key === 'ArrowRight' && !e.shiftKey)) {
+        if (App.cur < App.slides.length - 1) { e.preventDefault(); selectSlide(App.cur + 1); return; }
+      }
+      if (e.key === 'Home' && e.ctrlKey) {
+        e.preventDefault(); selectSlide(0); return;
+      }
+      if (e.key === 'End' && e.ctrlKey) {
+        e.preventDefault(); selectSlide(App.slides.length - 1); return;
+      }
+    }
     ShortcutManager.handleKeyDown(e);
   });
 }
@@ -201,7 +321,7 @@ function init() {
 
   newProject();
 
-  document.getElementById('add-slide-btn')?.addEventListener('click', addSlide);
+  document.getElementById('add-slide-btn')?.addEventListener('click', openTemplateModal);
   document.getElementById('dup-slide-btn')?.addEventListener('click', dupSlide);
   document.getElementById('panel-close')?.addEventListener('click', hidePanel);
 
@@ -270,24 +390,33 @@ function init() {
     if (s) { save(); s.background = bgs[App.theme] || '#fff'; document.getElementById('slide-bg-color').value = s.background; renderSlide(); renderThumbs(); }
   });
 
-  // Zoom
-  let zoomLevel = 1
-  function applyZoom() {
-    const canvas = document.getElementById('canvas')
-    if (!canvas) return
-    const val = document.getElementById('zoom-value')
-    if (val) val.textContent = Math.round(zoomLevel * 100) + '%'
-    canvas.style.transform = `scale(${zoomLevel})`
-    canvas.style.transformOrigin = 'center center'
+  // Zoom (handled in canvas.js)
+
+  // Notes
+  const notesInput = document.getElementById('notes-input');
+  const notesToggle = document.getElementById('notes-toggle');
+
+  function syncNotes() {
+    if (!notesInput) return;
+    notesInput.value = App.slides[App.cur]?.notes || '';
   }
-  document.getElementById('zoom-in')?.addEventListener('click', () => {
-    zoomLevel = Math.min(3, +(zoomLevel + 0.1).toFixed(1))
-    applyZoom()
-  })
-  document.getElementById('zoom-out')?.addEventListener('click', () => {
-    zoomLevel = Math.max(0.25, +(zoomLevel - 0.1).toFixed(1))
-    applyZoom()
-  })
+  window.syncNotes = syncNotes;
+
+  notesInput?.addEventListener('input', () => {
+    if (App.slides[App.cur]) {
+      App.slides[App.cur].notes = notesInput.value;
+      App.dirty = true;
+    }
+  });
+  notesToggle?.addEventListener('click', () => {
+    document.getElementById('notes-bar')?.classList.toggle('collapsed');
+  });
+
+  // Template modal
+  document.getElementById('template-close')?.addEventListener('click', closeTemplateModal);
+  document.getElementById('template-overlay')?.addEventListener('click', e => {
+    if (e.target.id === 'template-overlay') closeTemplateModal();
+  });
 
   if (window.lucide) lucide.createIcons();
 
@@ -443,6 +572,9 @@ window.exportPDF = exportPDF;
 window.exportPNG = exportPNG;
 window.loadProjectData = loadProjectData;
 window.updateStatusBar = updateStatusBar;
+window.openTemplateModal = openTemplateModal;
+window.applyTemplate = applyTemplate;
+window.SLIDE_TEMPLATES = SLIDE_TEMPLATES;
 
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -4,6 +4,10 @@
   let sx, sy, sl, st, sw, sh, ox, oy;
   let snapEnabled = true;
   const SNAP_THRESHOLD = 6;
+  let canvasScale = 1;
+  const ZOOM_MIN = 0.25;
+  const ZOOM_MAX = 3;
+  const ZOOM_STEP = 0.1;
 
   /**
    * Collects snap points from canvas edges, center + all other elements
@@ -88,6 +92,15 @@
   /** Removes all snap guide lines @returns {void} */
   function clearGuides() {
     if (guideContainer) guideContainer.innerHTML = ''
+  }
+
+  function applyZoom() {
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
+    canvas.style.transform = `scale(${canvasScale})`;
+    canvas.style.transformOrigin = 'top center';
+    const v = document.getElementById('zoom-value');
+    if (v) v.textContent = '%' + Math.round(canvasScale * 100);
   }
 
   /**
@@ -416,10 +429,33 @@
         if (!e.target.closest('#editor-ctx-menu')) hideEditorCtx();
       });
     }
+
+    document.getElementById('zoom-in')?.addEventListener('click', () => {
+      canvasScale = Math.min(ZOOM_MAX, parseFloat((canvasScale + ZOOM_STEP).toFixed(2)));
+      applyZoom();
+    });
+    document.getElementById('zoom-out')?.addEventListener('click', () => {
+      canvasScale = Math.max(ZOOM_MIN, parseFloat((canvasScale - ZOOM_STEP).toFixed(2)));
+      applyZoom();
+    });
+    document.getElementById('zoom-value')?.addEventListener('click', () => {
+      canvasScale = 1;
+      applyZoom();
+    });
+    document.getElementById('canvas-area')?.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+      canvasScale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN,
+        parseFloat((canvasScale + delta).toFixed(2))));
+      applyZoom();
+    }, { passive: false });
   }
 
   window.hideEditorCtx = hideEditorCtx;
   window.setSnapEnabled = (v) => { snapEnabled = v }
+  window.applyZoom = applyZoom;
+  window.getCanvasScale = () => canvasScale
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

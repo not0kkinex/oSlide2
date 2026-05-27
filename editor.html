@@ -111,6 +111,19 @@
         </button>
       </main>
 
+      <div id="notes-bar">
+        <div id="notes-bar-head">
+          <i data-lucide="file-text"></i>
+          <span>Konuşmacı Notları</span>
+          <button id="notes-toggle" title="Gizle/Göster">
+            <i data-lucide="chevron-down"></i>
+          </button>
+        </div>
+        <textarea id="notes-input"
+          placeholder="Bu slayt için notlarınızı buraya yazın..."
+          rows="3"></textarea>
+      </div>
+
       <aside id="panel" class="panel-hidden">
         <div class="panel-head">
           <span id="panel-title" data-i18n="editor.properties">Özellikler</span>
@@ -358,6 +371,19 @@
       </div>
       <div class="dialog-foot">
         <button id="editor-theme-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="template-overlay" class="hidden">
+    <div id="template-modal">
+      <div id="template-modal-head">
+        <span>Şablon Seç</span>
+        <button id="template-close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="template-grid">
       </div>
     </div>
   </div>
