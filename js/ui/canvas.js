@@ -248,7 +248,13 @@
       }
       if (updates.length) {
         save()
-        for (const u of updates) updEl(u.id, { x: u.x, y: u.y, width: u.width, height: u.height })
+        const s = slide()
+        for (const u of updates) {
+          const el = s?.elements.find(e => e.id === u.id)
+          if (el) Object.assign(el, { x: u.x, y: u.y, width: u.width, height: u.height })
+        }
+        renderSlide()
+        renderThumbs()
       }
     }
     dragging = false;
