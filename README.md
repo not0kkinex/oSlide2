@@ -149,8 +149,9 @@ All shortcuts are customizable in Settings > Shortcuts.
 
 ## Contributors
 
-<img src="https://github.com/not0kkinex.png" style="border-radius:50%;width:40px;height:40px" alt="not0kkinex">
-<img src="https://github.com/kyrtstn.png" style="border-radius:50%;width:40px;height:40px" alt="kyrtstn">
+<a href="https://github.com/not0kkinex/oSlide2/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=not0kkinex/oSlide2" />
+</a>
 
 ## TODO
 
