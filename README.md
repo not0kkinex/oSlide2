@@ -156,7 +156,7 @@ All shortcuts are customizable in Settings > Shortcuts.
 ## TODO
 
 - [x] Slide templates & layouts
-- [ ] Charts & data visualization
+- [x] Charts & data visualization
 - [ ] Cloud sync / backup
 - [ ] Collaborative editing
 - [ ] Mobile remote control
