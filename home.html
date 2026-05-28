@@ -1,448 +1,387 @@
 <!DOCTYPE html>
+
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file: https:; img-src 'self' data: file: https:;">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+<meta
+ http-equiv="Content-Security-Policy"
+ content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file: https:; img-src 'self' data: file: https:;"
+/>
+
+  <meta name="color-scheme" content="dark light" />
+
   <title>oSlide2</title>
-  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin.css">
-  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext.css">
-  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-italic.css">
-  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext-italic.css">
-  <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="css/toast.css">
+
+  <!-- Fonts -->
+
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin.css" />
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext.css" />
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-italic.css" />
+  <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext-italic.css" />
+
+  <!-- Styles -->
+
+  <link rel="stylesheet" href="css/home.css" />
+  <link rel="stylesheet" href="css/toast.css" />
 </head>
+
 <body>
   <div id="app">
-    <aside id="sidebar">
-      <div class="sidebar-logo">
-        <div class="logo-box">O</div>
-        <span class="logo-text">oSlide2</span>
-      </div>
-      <nav class="sidebar-nav">
-        <a class="nav-item active" data-section="home"><i data-lucide="layout-dashboard"></i> <span data-i18n="home.projects">Ana Ekran</span></a>
-        <a class="nav-item" data-section="recent"><i data-lucide="clock"></i> <span data-i18n="home.recent">Son Projeler</span></a>
-        <a class="nav-item" data-section="favorites"><i data-lucide="star"></i> <span data-i18n="home.favorites">Favoriler</span></a>
-      </nav>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">ŞABLONLAR</div>
-      <nav class="sidebar-nav">
-        <a class="nav-item" data-section="templates"><i data-lucide="layout-template"></i> <span>Şablon Galerisi</span></a>
-      </nav>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label" data-i18n="home.themes">TEMALAR</div>
-      <nav class="sidebar-nav">
-        <a class="nav-item" data-section="themes"><i data-lucide="palette"></i> <span data-i18n="home.themeGallery">Tema Galerisi</span></a>
-        <a class="nav-item" data-section="new-theme" id="sidebar-new-theme"><i data-lucide="plus-circle"></i> <span data-i18n="home.newTheme">Yeni Tema</span></a>
-      </nav>
-      <div class="sidebar-spacer"></div>
-      <nav class="sidebar-nav">
-        <a class="nav-item" id="sidebar-settings"><i data-lucide="settings"></i> <span data-i18n="home.settings">Ayarlar</span></a>
-      </nav>
-    </aside>
 
-    <div id="main-area">
-      <header id="topbar">
-        <div class="search-box">
-          <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="search-input" data-i18n-attr="placeholder:home.searchPlaceholder" />
-        </div>
-        <button id="new-project-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
-        <button id="open-file-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
-      </header>
+```
+<!-- SIDEBAR -->
+<aside id="sidebar" aria-label="Sidebar Navigation">
 
-      <div id="content">
-        <div id="welcome" class="hidden">
-          <div class="welcome-icon"><i data-lucide="presentation"></i></div>
-          <h1 data-i18n="home.title">Henüz proje yok</h1>
-          <p data-i18n="home.subtitle">İlk sununuzu oluşturun.</p>
-          <button id="welcome-new-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
-          <button id="welcome-open-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
-        </div>
-
-        <div id="projects-section" class="hidden">
-          <div id="projects-grid"></div>
-          <div id="project-list"></div>
-        </div>
-
-        <div id="themes-section" class="hidden">
-          <div id="themes-grid"></div>
-        </div>
-
-        <section id="section-templates" class="home-section hidden">
-          <div class="section-head">
-            <h2>Şablon Galerisi</h2>
-            <p class="section-desc">
-              Bir şablon seç, proje olarak açılır — istediğin gibi düzenle.
-            </p>
-          </div>
-
-          <div class="template-filter">
-            <button class="tf-btn active" data-cat="all">Tümü</button>
-            <button class="tf-btn" data-cat="temel">Temel</button>
-            <button class="tf-btn" data-cat="düzen">Düzen</button>
-            <button class="tf-btn" data-cat="içerik">İçerik</button>
-          </div>
-
-          <div id="template-gallery" class="template-gallery-grid">
-          </div>
-        </section>
-      </div>
-    </div>
-
-    <!-- New Project Dialog -->
-    <div id="dialog-overlay" class="hidden">
-      <div id="dialog">
-        <div class="dialog-head">
-          <span id="dialog-title" data-i18n="project.new">Yeni Proje</span>
-          <button id="dialog-close"><i data-lucide="x"></i></button>
-        </div>
-        <div id="dialog-body">
-          <div class="form-group">
-            <label data-i18n="project.name">Proje Adı</label>
-            <input type="text" id="project-name-input" data-i18n-attr="placeholder:project.name" />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label data-i18n="project.template">Şablon</label>
-              <select id="template-select">
-                <option value="blank" data-i18n="template.blank">Boş Proje</option>
-                <option value="business" data-i18n="template.business">İş Sunumu</option>
-                <option value="education" data-i18n="template.education">Eğitim</option>
-                <option value="minimal" data-i18n="template.minimal">Minimalist</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label data-i18n="project.theme">Tema</label>
-              <select id="project-theme-select"></select>
-            </div>
-          </div>
-        </div>
-        <div class="dialog-foot">
-          <button id="dialog-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
-          <button id="dialog-confirm" class="btn-primary" data-i18n="dialog.create">Oluştur</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Rename Dialog -->
-    <div id="rename-overlay" class="hidden">
-      <div id="rename-dialog">
-        <div class="dialog-head">
-          <span data-i18n="project.rename">Yeniden Adlandır</span>
-          <button id="rename-close"><i data-lucide="x"></i></button>
-        </div>
-        <div class="dialog-body">
-          <div class="form-group">
-            <label data-i18n="project.newName">Yeni Ad</label>
-            <input type="text" id="rename-input" />
-          </div>
-        </div>
-        <div class="dialog-foot">
-          <button id="rename-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
-          <button id="rename-confirm" class="btn-primary" data-i18n="settings.save">Kaydet</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Context Menu -->
-    <div id="ctx-menu" class="hidden">
-      <div class="ctx-item" data-action="open"><i data-lucide="file-text"></i> <span data-i18n="context.open">Aç</span></div>
-      <div class="ctx-item" data-action="rename"><i data-lucide="pencil"></i> <span data-i18n="context.rename">Yeniden Adlandır</span></div>
-      <div class="ctx-item" data-action="duplicate"><i data-lucide="copy"></i> <span data-i18n="context.duplicate">Kopyala</span></div>
-      <div class="ctx-item" data-action="export"><i data-lucide="download"></i> <span data-i18n="context.export">Dışa Aktar</span></div>
-      <div class="ctx-sep"></div>
-      <div class="ctx-item" data-action="favorite"><i data-lucide="star"></i> <span data-i18n="context.favorite">Favorilere Ekle</span></div>
-      <div class="ctx-sep"></div>
-      <div class="ctx-item ctx-danger" data-action="delete"><i data-lucide="trash-2"></i> <span data-i18n="context.delete">Sil</span></div>
-    </div>
-
-    <!-- Theme Editor Dialog -->
-    <div id="theme-dlg-overlay" class="hidden">
-      <div id="theme-dlg">
-        <div class="dialog-head">
-          <span id="theme-dlg-title" data-i18n="theme.editTitle">Tema Düzenle</span>
-          <button id="theme-dlg-close"><i data-lucide="x"></i></button>
-        </div>
-        <div id="theme-dlg-body">
-          <div class="form-group">
-            <label data-i18n="theme.name">Tema Adı</label>
-            <input type="text" id="th-name" />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label data-i18n="theme.canvasBg">Arkaplan</label>
-              <input type="color" id="th-canvasBg" value="#ffffff" />
-            </div>
-            <div class="form-group">
-              <label data-i18n="theme.titleColor">Başlık Rengi</label>
-              <input type="color" id="th-titleColor" value="#222222" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label data-i18n="theme.textColor">Metin Rengi</label>
-              <input type="color" id="th-textColor" value="#333333" />
-            </div>
-            <div class="form-group">
-              <label data-i18n="theme.titleFont">Başlık Yazı Tipi</label>
-              <select id="th-titleFont">
-                <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Trebuchet MS">Trebuchet MS</option>
-                <option value="Impact">Impact</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label data-i18n="theme.textFont">Metin Yazı Tipi</label>
-              <select id="th-textFont">
-                <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Trebuchet MS">Trebuchet MS</option>
-                <option value="Impact">Impact</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label data-i18n="theme.animType">Animasyon</label>
-              <select id="th-animType">
-                <option value="fade">Fade</option>
-                <option value="slide-up">Slide Up</option>
-                <option value="slide-down">Slide Down</option>
-                <option value="slide-left">Slide Left</option>
-                <option value="slide-right">Slide Right</option>
-                <option value="zoom-in">Zoom In</option>
-                <option value="zoom-out">Zoom Out</option>
-                <option value="bounce">Bounce</option>
-                <option value="pulse">Pulse</option>
-                <option value="none">None</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label data-i18n="theme.animDuration">Animasyon Süresi (sn)</label>
-            <input type="number" id="th-animDuration" value="0.5" step="0.1" min="0.1" max="5" />
-          </div>
-          <div id="th-preview" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
-            <div id="th-preview-title" style="font-size:20px;font-weight:700;margin-bottom:4px" data-i18n="theme.previewTitle">Başlık Önizlemesi</div>
-            <div id="th-preview-text" style="font-size:14px" data-i18n="theme.previewText">Metin önizlemesi</div>
-          </div>
-        </div>
-        <div class="dialog-foot">
-          <button id="theme-dlg-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
-          <button id="theme-dlg-delete" class="btn-danger" style="margin-right:auto" data-i18n="theme.delete">Temayı Sil</button>
-          <button id="theme-dlg-save" class="btn-primary" data-i18n="settings.save">Kaydet</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings Panel -->
-    <div id="settings-overlay" class="hidden">
-      <div id="settings-panel">
-        <div class="settings-head">
-          <span class="settings-title" data-i18n="settings.title">Ayarlar</span>
-          <button id="settings-close"><i data-lucide="x"></i></button>
-        </div>
-        <div class="settings-tabs">
-          <button class="settings-tab active" data-tab="general" data-i18n="settings.general">Genel</button>
-          <button class="settings-tab" data-tab="editor" data-i18n="settings.editor">Düzenleyici</button>
-          <button class="settings-tab" data-tab="shortcuts" data-i18n="settings.shortcuts">Kısayollar</button>
-          <button class="settings-tab" data-tab="about" data-i18n="settings.about">Hakkında</button>
-        </div>
-        <div class="settings-body">
-          <div class="settings-tab-content active" id="tab-general">
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.theme">Tema</label>
-              <div class="theme-cards">
-                <div class="theme-card" data-theme="dark">
-                  <div class="theme-card-preview theme-card-dark"></div>
-                  <span data-i18n="settings.dark">Koyu</span>
-                </div>
-                <div class="theme-card" data-theme="light">
-                  <div class="theme-card-preview theme-card-light"></div>
-                  <span data-i18n="settings.light">Açık</span>
-                </div>
-                <div class="theme-card" data-theme="system">
-                  <div class="theme-card-preview theme-card-system"></div>
-                  <span data-i18n="settings.system">Sistem</span>
-                </div>
-              </div>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.language">Dil</label>
-              <select id="set-language">
-                <option value="tr" data-i18n="lang.tr">Türkçe</option>
-                <option value="en" data-i18n="lang.en">English</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label">
-                <span data-i18n="settings.autoSave">Otomatik Kaydet</span>
-                <input type="checkbox" id="set-autosave">
-              </label>
-            </div>
-            <div class="sg" id="sg-autosave-interval">
-              <label class="sg-label" data-i18n="settings.autoSaveInterval">Kaydetme Aralığı</label>
-              <select id="set-autosave-interval">
-                <option value="30" data-i18n="autosave.30sec">30 saniye</option>
-                <option value="60" data-i18n="autosave.1min">1 dakika</option>
-                <option value="120" data-i18n="autosave.2min">2 dakika</option>
-                <option value="300" data-i18n="autosave.5min">5 dakika</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultTemplate">Varsayılan Şablon</label>
-              <select id="set-default-template">
-                <option value="blank" data-i18n="template.blank">Boş Proje</option>
-                <option value="business" data-i18n="template.business">İş Sunumu</option>
-                <option value="education" data-i18n="template.education">Eğitim</option>
-                <option value="minimal" data-i18n="template.minimal">Minimalist</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.recentCount">Son Proje Sayısı</label>
-              <select id="set-recent-count">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-              </select>
-            </div>
-          </div>
-          <div class="settings-tab-content" id="tab-editor">
-            <div class="sg">
-              <label class="sg-label">
-                <span data-i18n="settings.snapToGrid">Izgaraya Yapış</span>
-                <input type="checkbox" id="set-snap">
-              </label>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.gridSize">Izgara Aralığı</label>
-              <select id="set-grid-size">
-                <option value="10">10px</option>
-                <option value="20">20px</option>
-                <option value="50">50px</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultFont">Varsayılan Yazı Tipi</label>
-              <select id="set-font-family">
-                <option value="Arial">Arial</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Verdana">Verdana</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultFontSize">Varsayılan Yazı Boyutu</label>
-              <select id="set-font-size">
-                <option value="14">14px</option>
-                <option value="16">16px</option>
-                <option value="18">18px</option>
-                <option value="20">20px</option>
-                <option value="24">24px</option>
-              </select>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.canvasBg">Canvas Arkaplan Rengi</label>
-              <input type="color" id="set-canvas-bg" value="#1a1a1a">
-            </div>
-            <div class="sg">
-              <label class="sg-label">
-                <span data-i18n="settings.autoPanel">Özellik Panelini Otomatik Aç</span>
-                <input type="checkbox" id="set-auto-panel">
-              </label>
-            </div>
-            <div class="sg">
-              <label class="sg-label" data-i18n="settings.thumbSize">Thumbnail Boyutu</label>
-              <select id="set-thumb-size">
-                <option value="small" data-i18n="thumbSize.small">Küçük</option>
-                <option value="medium" data-i18n="thumbSize.medium">Orta</option>
-                <option value="large" data-i18n="thumbSize.large">Büyük</option>
-              </select>
-            </div>
-          </div>
-          <div class="settings-tab-content" id="tab-shortcuts">
-            <div class="shortcuts-list">
-              <div class="sc-item"><span class="sc-key">Ctrl+Z</span><span class="sc-desc" data-i18n="shortcuts.undo">Geri Al</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+Y</span><span class="sc-desc" data-i18n="shortcuts.redo">İleri Al</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+S</span><span class="sc-desc" data-i18n="shortcuts.save">Kaydet</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+C</span><span class="sc-desc" data-i18n="shortcuts.copy">Kopyala</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+V</span><span class="sc-desc" data-i18n="shortcuts.paste">Yapıştır</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+B</span><span class="sc-desc" data-i18n="shortcuts.bold">Kalın</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+I</span><span class="sc-desc" data-i18n="shortcuts.italic">İtalik</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+U</span><span class="sc-desc" data-i18n="shortcuts.underline">Altı Çizili</span></div>
-              <div class="sc-item"><span class="sc-key">Delete</span><span class="sc-desc" data-i18n="shortcuts.delete">Seçili Öğeyi Sil</span></div>
-              <div class="sc-item"><span class="sc-key">F5</span><span class="sc-desc" data-i18n="shortcuts.presentation">Sunumu Başlat</span></div>
-              <div class="sc-item"><span class="sc-key">Ctrl+1..9</span><span class="sc-desc" data-i18n="shortcuts.quickOpen">Projeleri Hızlı Aç</span></div>
-              <div class="sc-item"><span class="sc-key">Escape</span><span class="sc-desc" data-i18n="shortcuts.close">Dialog/Menü Kapat</span></div>
-            </div>
-          </div>
-          <div class="settings-tab-content" id="tab-about">
-            <div class="about-section">
-              <div class="about-logo">oSlide2</div>
-              <div class="about-version">v0.2.1</div>
-              <div class="about-desc" data-i18n="about.desc">Electron tabanlı modern sunum uygulaması</div>
-              <div class="about-links">
-                <a href="#" id="about-github" class="about-link"><i data-lucide="github"></i> GitHub</a>
-              </div>
-              <div class="about-tech">
-                <span>Electron</span><span>Node.js</span><span>Lucide</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="settings-foot">
-          <button id="settings-cancel" class="btn-secondary" data-i18n="settings.cancel">İptal</button>
-          <button id="settings-save" class="btn-primary" data-i18n="settings.save">Kaydet</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="dev-console" class="hidden">
-      <div class="dc-head">
-        <span>Dev Console</span>
-        <button id="dc-close"><i data-lucide="x"></i></button>
-      </div>
-      <div class="dc-body">
-        <div class="dc-section">
-          <div class="dc-label">Commands</div>
-          <input type="text" id="dc-input" placeholder="Type JS expression...">
-        </div>
-        <div class="dc-section">
-          <div class="dc-label">Output</div>
-          <pre id="dc-output"></pre>
-        </div>
-        <div class="dc-section">
-          <div class="dc-label">State</div>
-          <pre id="dc-state"></pre>
-        </div>
-      </div>
-    </div>
+  <div class="sidebar-logo">
+    <div class="logo-box">O</div>
+    <span class="logo-text">oSlide2</span>
   </div>
 
-  <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
-  <script src="js/components/toast.js"></script>
-  <script src="js/services/theme.js"></script>
-  <script src="js/services/i18n.js"></script>
-  <script src="js/services/shortcuts.js"></script>
-  <script src="js/data/templates.js"></script>
-  <script src="js/services/projectManager.js"></script>
-  <script src="js/pages/homeTheme.js"></script>
-  <script src="js/pages/homeSettings.js"></script>
-  <script src="js/pages/homeProject.js"></script>
-  <script src="js/pages/home.js"></script>
-  <script src="js/services/console.js"></script>
+  <!-- MAIN NAV -->
+  <nav class="sidebar-nav" aria-label="Main Navigation">
+
+    <a
+      class="nav-item active"
+      data-section="home"
+      aria-current="page"
+    >
+      <i data-lucide="layout-dashboard"></i>
+      <span data-i18n="home.projects">
+        Ana Ekran
+      </span>
+    </a>
+
+    <a
+      class="nav-item"
+      data-section="recent"
+    >
+      <i data-lucide="clock"></i>
+      <span data-i18n="home.recent">
+        Son Projeler
+      </span>
+    </a>
+
+    <a
+      class="nav-item"
+      data-section="favorites"
+    >
+      <i data-lucide="star"></i>
+      <span data-i18n="home.favorites">
+        Favoriler
+      </span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- TEMPLATE SECTION -->
+  <div class="sidebar-section-label">
+    ŞABLONLAR
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <a
+      class="nav-item"
+      data-section="templates"
+    >
+      <i data-lucide="layout-template"></i>
+
+      <span>
+        Şablon Galerisi
+      </span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- THEMES -->
+  <div
+    class="sidebar-section-label"
+    data-i18n="home.themes"
+  >
+    TEMALAR
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <a
+      class="nav-item"
+      data-section="themes"
+    >
+      <i data-lucide="palette"></i>
+
+      <span data-i18n="home.themeGallery">
+        Tema Galerisi
+      </span>
+    </a>
+
+    <a
+      class="nav-item"
+      data-section="new-theme"
+      id="sidebar-new-theme"
+    >
+      <i data-lucide="plus-circle"></i>
+
+      <span data-i18n="home.newTheme">
+        Yeni Tema
+      </span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-spacer"></div>
+
+  <!-- SETTINGS -->
+  <nav class="sidebar-nav">
+
+    <a
+      class="nav-item"
+      id="sidebar-settings"
+    >
+      <i data-lucide="settings"></i>
+
+      <span data-i18n="home.settings">
+        Ayarlar
+      </span>
+    </a>
+
+  </nav>
+
+</aside>
+
+<!-- MAIN -->
+<main id="main-area">
+
+  <!-- TOPBAR -->
+  <header id="topbar">
+
+    <!-- SEARCH -->
+    <div
+      class="search-box"
+      role="search"
+    >
+
+      <i
+        data-lucide="search"
+        class="search-icon"
+      ></i>
+
+      <input
+        type="search"
+        id="search-input"
+        autocomplete="off"
+        spellcheck="false"
+        data-i18n-attr="placeholder:home.searchPlaceholder"
+      />
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="topbar-actions">
+
+      <button
+        id="new-project-btn"
+        class="btn-primary"
+        type="button"
+      >
+        <i data-lucide="plus"></i>
+
+        <span data-i18n="home.newProject">
+          Yeni Proje
+        </span>
+      </button>
+
+      <button
+        id="open-file-btn"
+        class="btn-secondary"
+        type="button"
+      >
+        <i data-lucide="folder-open"></i>
+
+        <span data-i18n="home.openFile">
+          Dosyadan Aç
+        </span>
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- CONTENT -->
+  <section id="content">
+
+    <!-- EMPTY STATE -->
+    <section
+      id="welcome"
+      class="hidden"
+    >
+
+      <div class="welcome-icon">
+        <i data-lucide="presentation"></i>
+      </div>
+
+      <h1 data-i18n="home.title">
+        Henüz proje yok
+      </h1>
+
+      <p data-i18n="home.subtitle">
+        İlk sununuzu oluşturun.
+      </p>
+
+      <div class="welcome-actions">
+
+        <button
+          id="welcome-new-btn"
+          class="btn-primary"
+          type="button"
+        >
+          <i data-lucide="plus"></i>
+
+          <span data-i18n="home.newProject">
+            Yeni Proje
+          </span>
+        </button>
+
+        <button
+          id="welcome-open-btn"
+          class="btn-secondary"
+          type="button"
+        >
+          <i data-lucide="folder-open"></i>
+
+          <span data-i18n="home.openFile">
+            Dosyadan Aç
+          </span>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- PROJECTS -->
+    <section
+      id="projects-section"
+      class="hidden"
+    >
+      <div id="projects-grid"></div>
+      <div id="project-list"></div>
+    </section>
+
+    <!-- THEMES -->
+    <section
+      id="themes-section"
+      class="hidden"
+    >
+      <div id="themes-grid"></div>
+    </section>
+
+    <!-- TEMPLATE GALLERY -->
+    <section
+      id="section-templates"
+      class="home-section hidden"
+    >
+
+      <div class="section-head">
+
+        <h2>
+          Şablon Galerisi
+        </h2>
+
+        <p class="section-desc">
+          Bir şablon seç, proje olarak açılır —
+          istediğin gibi düzenle.
+        </p>
+
+      </div>
+
+      <!-- FILTER -->
+      <div class="template-filter">
+
+        <button
+          class="tf-btn active"
+          data-cat="all"
+          type="button"
+        >
+          Tümü
+        </button>
+
+        <button
+          class="tf-btn"
+          data-cat="temel"
+          type="button"
+        >
+          Temel
+        </button>
+
+        <button
+          class="tf-btn"
+          data-cat="düzen"
+          type="button"
+        >
+          Düzen
+        </button>
+
+        <button
+          class="tf-btn"
+          data-cat="içerik"
+          type="button"
+        >
+          İçerik
+        </button>
+
+      </div>
+
+      <!-- GALLERY -->
+      <div
+        id="template-gallery"
+        class="template-gallery-grid"
+      ></div>
+
+    </section>
+
+  </section>
+
+</main>
+```
+
+  </div>
+
+  <!-- SCRIPTS -->
+
+  <script
+    defer
+    src="node_modules/lucide/dist/umd/lucide.min.js"
+  ></script>
+
+  <script defer src="js/components/toast.js"></script>
+
+  <script defer src="js/services/theme.js"></script>
+
+  <script defer src="js/services/i18n.js"></script>
+
+  <script defer src="js/services/shortcuts.js"></script>
+
+  <script defer src="js/data/templates.js"></script>
+
+  <script defer src="js/services/projectManager.js"></script>
+
+  <script defer src="js/pages/homeTheme.js"></script>
+
+  <script defer src="js/pages/homeSettings.js"></script>
+
+  <script defer src="js/pages/homeProject.js"></script>
+
+  <script defer src="js/pages/home.js"></script>
+
+  <script defer src="js/services/console.js"></script>
+
 </body>
 </html>
