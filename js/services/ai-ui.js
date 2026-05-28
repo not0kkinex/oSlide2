@@ -521,6 +521,59 @@ function initAI() {
     if (w) w.style.display = ''
   }
 
+  async function genSlides(topic, count, _internal) {
+    if (aiBusy && !_internal) return
+    if (typeof topic === 'object') topic = ''
+    const c = count || extractCount(input.value.trim()) || 3
+    const t = topic || input.value.trim() || 'sunum'
+    input.value = ''
+    input.style.height = 'auto'
+    aiBusy = true
+    hideWelcome()
+
+    const status = agentMsg('layers', I18n.t('ai.status.thinking'))
+    typing.classList.remove('hidden')
+    try {
+      const ctx = buildSlideContext()
+      replaceMsg(status, 'pen-tool', I18n.t('ai.status.waiting'))
+      const slides = await AI.generateSlides(t, c, ctx)
+      status.remove()
+
+      if (slides?.length) {
+        Toast.show(I18n.t('ai.result.slidesCreated', String(slides.length)), Toast.SUCCESS, 3000)
+        const th = App.projectTheme
+        const bg = th?.canvasBg || '#ffffff'
+        const tc = th?.titleColor || '#222'
+        const tf = th?.titleFont || 'Arial'
+        const mc = th?.textColor || '#444'
+        const mf = th?.textFont || 'Arial'
+
+        slides.forEach((s, idx) => {
+          save()
+          const els = []
+          const bullets = Array.isArray(s.bullets) ? s.bullets : []
+          els.push({ id: id(), type: 'title', content: s.title || '', x: 60, y: 40, width: 840, height: 65, fontSize: 42, fontFamily: tf, color: tc, bold: true, textAlign: 'center' })
+          bullets.forEach((b, i) => els.push({ id: id(), type: 'text', content: b, x: 70, y: 130 + i * 38, width: 820, height: 34, fontSize: 20, fontFamily: mf, color: mc, textAlign: 'left' }))
+          if (th) els.forEach(el => { el.animType = th.animType || 'fade'; el.animDuration = th.animDuration || 0.5 })
+          App.slides.push({ id: id(), background: bg, elements: els, transition: 'fade', notes: '' })
+        })
+        App.cur = App.slides.length - slides.length
+        App.sel = null
+        renderAll()
+        renderThumbs()
+        addUIMsg(I18n.t('ai.result.slidesCreated', String(slides.length)))
+      } else {
+        addUIMsg(I18n.t('ai.error'))
+      }
+    } catch (e) {
+      status?.remove()
+      Toast.error(e, 'Slide Generation')
+      addUIMsg(I18n.t('ai.error') + ': ' + e.message)
+    }
+    aiBusy = false
+    typing.classList.add('hidden')
+  }
+
   async function smartAction(action) {
     const el = selEl()
     if (!el || !el.content) return

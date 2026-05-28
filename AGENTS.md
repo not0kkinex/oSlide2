@@ -35,6 +35,9 @@ oSlide2 is an Electron-based slide/presentation app. Vanilla JS, no frameworks.
 11. `services/ai-ui.js` — AI chat UI (depends on state + actions + renderer + ai)
 12. `pages/editor.js` or `pages/home.js` — Page init
 
+## Known Issues
+- `genSlides` must exist in ai-ui.js (called from send(), execAction, and click handler). If missing, `initAI()` throws ReferenceError and prevents ALL subsequent init code (settings, theme buttons, etc.) from running.
+
 ## Key Conventions
 - Always use `window.*` for cross-module access
 - State lives in `App` / `CoreState` global
