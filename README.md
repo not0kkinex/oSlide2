@@ -149,8 +149,8 @@ All shortcuts are customizable in Settings > Shortcuts.
 
 ## Contributors
 
-<a href="https://github.com/not0kkinex"><img src="https://github.com/not0kkinex.png" width="40" height="40" style="border-radius:50%;vertical-align:middle" alt="not0kkinex"> not0kkinex</a>
-<a href="https://github.com/kyrtstn"><img src="https://github.com/kyrtstn.png" width="40" height="40" style="border-radius:50%;vertical-align:middle" alt="kyrtstn"> kyrtstn</a>
+<a href="https://github.com/not0kkinex"><span style="display:inline-block;width:40px;height:40px;border-radius:50%;overflow:hidden;vertical-align:middle"><img src="https://github.com/not0kkinex.png" width="40" height="40" alt="not0kkinex"></span></a>
+<a href="https://github.com/kyrtstn"><span style="display:inline-block;width:40px;height:40px;border-radius:50%;overflow:hidden;vertical-align:middle"><img src="https://github.com/kyrtstn.png" width="40" height="40" alt="kyrtstn"></span></a>
 
 ## TODO
 
