@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file: https:; img-src 'self' data: file: https:;">
+  <meta name="theme-color" content="#1a1a1a">
   <title>oSlide2</title>
   <link rel="stylesheet" href="node_modules/@fontsource/inter/latin.css">
   <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext.css">
@@ -14,53 +15,73 @@
 </head>
 <body>
   <div id="app">
-    <aside id="sidebar">
+    <aside id="sidebar" role="navigation" aria-label="Ana Menü">
       <div class="sidebar-logo">
         <div class="logo-box">O</div>
         <span class="logo-text">oSlide2</span>
       </div>
       <nav class="sidebar-nav">
-        <a class="nav-item active" data-section="home"><i data-lucide="layout-dashboard"></i> <span data-i18n="home.projects">Ana Ekran</span></a>
-        <a class="nav-item" data-section="recent"><i data-lucide="clock"></i> <span data-i18n="home.recent">Son Projeler</span></a>
-        <a class="nav-item" data-section="favorites"><i data-lucide="star"></i> <span data-i18n="home.favorites">Favoriler</span></a>
+        <a class="nav-item active" data-section="home"><i data-lucide="layout-dashboard" aria-hidden="true"></i> <span data-i18n="home.projects">Ana Ekran</span></a>
+        <a class="nav-item" data-section="recent"><i data-lucide="clock" aria-hidden="true"></i> <span data-i18n="home.recent">Son Projeler</span></a>
+        <a class="nav-item" data-section="favorites"><i data-lucide="star" aria-hidden="true"></i> <span data-i18n="home.favorites">Favoriler</span></a>
       </nav>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label">ŞABLONLAR</div>
       <nav class="sidebar-nav">
-        <a class="nav-item" data-section="templates"><i data-lucide="layout-template"></i> <span>Şablon Galerisi</span></a>
+        <a class="nav-item" data-section="templates"><i data-lucide="layout-template" aria-hidden="true"></i> <span>Şablon Galerisi</span></a>
       </nav>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label" data-i18n="home.themes">TEMALAR</div>
       <nav class="sidebar-nav">
-        <a class="nav-item" data-section="themes"><i data-lucide="palette"></i> <span data-i18n="home.themeGallery">Tema Galerisi</span></a>
-        <a class="nav-item" data-section="new-theme" id="sidebar-new-theme"><i data-lucide="plus-circle"></i> <span data-i18n="home.newTheme">Yeni Tema</span></a>
+        <a class="nav-item" data-section="themes"><i data-lucide="palette" aria-hidden="true"></i> <span data-i18n="home.themeGallery">Tema Galerisi</span></a>
+        <a class="nav-item" data-section="new-theme" id="sidebar-new-theme"><i data-lucide="plus-circle" aria-hidden="true"></i> <span data-i18n="home.newTheme">Yeni Tema</span></a>
       </nav>
       <div class="sidebar-spacer"></div>
       <nav class="sidebar-nav">
-        <a class="nav-item" id="sidebar-settings"><i data-lucide="settings"></i> <span data-i18n="home.settings">Ayarlar</span></a>
+        <a class="nav-item" id="sidebar-settings" title="Ayarlar (Ctrl+,)"><i data-lucide="settings" aria-hidden="true"></i> <span data-i18n="home.settings">Ayarlar</span></a>
       </nav>
     </aside>
 
     <div id="main-area">
-      <header id="topbar">
+      <header id="topbar" role="banner">
         <div class="search-box">
-          <i data-lucide="search" class="search-icon"></i>
-          <input type="text" id="search-input" data-i18n-attr="placeholder:home.searchPlaceholder" />
+          <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+          <input type="text" id="search-input" data-i18n-attr="placeholder:home.searchPlaceholder" aria-label="Proje veya şablon ara" />
         </div>
-        <button id="new-project-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
-        <button id="open-file-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
+        
+        <div class="topbar-actions" style="display: flex; gap: 8px; align-items: center;">
+          <div id="sync-status" class="sync-indicator" title="Senkronize edildi" style="margin-right: 12px; color: var(--text-muted, #888); cursor: pointer;">
+            <i data-lucide="cloud-check" aria-hidden="true" style="width: 18px; height: 18px;"></i>
+          </div>
+          
+          <button id="new-project-btn" class="btn-primary" title="Yeni bir proje oluştur (Ctrl+N)"><i data-lucide="plus" aria-hidden="true"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
+          <button id="open-file-btn" class="btn-secondary" title="Bilgisayardan dosya aç (Ctrl+O)"><i data-lucide="folder-open" aria-hidden="true"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
+          
+          <button id="user-profile-btn" class="btn-icon" aria-label="Kullanıcı Profili" style="margin-left: 8px; background: transparent; border: none; cursor: pointer; color: inherit;">
+            <i data-lucide="user-circle" aria-hidden="true"></i>
+          </button>
+        </div>
       </header>
 
-      <div id="content">
+      <div id="content" role="main">
         <div id="welcome" class="hidden">
-          <div class="welcome-icon"><i data-lucide="presentation"></i></div>
+          <div class="welcome-icon"><i data-lucide="presentation" aria-hidden="true"></i></div>
           <h1 data-i18n="home.title">Henüz proje yok</h1>
           <p data-i18n="home.subtitle">İlk sununuzu oluşturun.</p>
-          <button id="welcome-new-btn" class="btn-primary"><i data-lucide="plus"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
-          <button id="welcome-open-btn" class="btn-secondary"><i data-lucide="folder-open"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
+          <div class="welcome-actions" style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+            <button id="welcome-new-btn" class="btn-primary"><i data-lucide="plus" aria-hidden="true"></i> <span data-i18n="home.newProject">Yeni Proje</span></button>
+            <button id="welcome-open-btn" class="btn-secondary"><i data-lucide="folder-open" aria-hidden="true"></i> <span data-i18n="home.openFile">Dosyadan Aç</span></button>
+          </div>
         </div>
 
         <div id="projects-section" class="hidden">
+          <div class="section-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <select id="project-sort-select" aria-label="Projeleri sırala" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color, #444); background: var(--bg-color, #222); color: inherit;">
+              <option value="newest">En Yeni</option>
+              <option value="oldest">En Eski</option>
+              <option value="name_asc">A-Z</option>
+            </select>
+          </div>
           <div id="projects-grid"></div>
           <div id="project-list"></div>
         </div>
@@ -77,34 +98,44 @@
             </p>
           </div>
 
-          <div class="template-filter">
-            <button class="tf-btn active" data-cat="all">Tümü</button>
-            <button class="tf-btn" data-cat="temel">Temel</button>
-            <button class="tf-btn" data-cat="düzen">Düzen</button>
-            <button class="tf-btn" data-cat="içerik">İçerik</button>
+          <div class="template-filter" role="tablist">
+            <button class="tf-btn active" data-cat="all" role="tab" aria-selected="true">Tümü</button>
+            <button class="tf-btn" data-cat="temel" role="tab" aria-selected="false">Temel</button>
+            <button class="tf-btn" data-cat="düzen" role="tab" aria-selected="false">Düzen</button>
+            <button class="tf-btn" data-cat="içerik" role="tab" aria-selected="false">İçerik</button>
           </div>
 
           <div id="template-gallery" class="template-gallery-grid">
           </div>
         </section>
       </div>
+
+      <footer id="app-status-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 16px; font-size: 12px; border-top: 1px solid var(--border-color, #333); background: var(--sidebar-bg, #1e1e1e); color: var(--text-muted, #888);">
+        <div class="status-left" style="display: flex; gap: 16px;">
+          <span id="status-message">Hazır</span>
+          <span id="status-workspace"><i data-lucide="hard-drive" style="width:12px; height:12px; vertical-align: middle; margin-right:4px;"></i> Yerel Çalışma Alanı</span>
+        </div>
+        <div class="status-right" style="display: flex; gap: 16px;">
+          <span id="status-encoding">UTF-8</span>
+          <span id="status-version">oSlide2 v0.2.1</span>
+        </div>
+      </footer>
     </div>
 
-    <!-- New Project Dialog -->
-    <div id="dialog-overlay" class="hidden">
+    <div id="dialog-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
       <div id="dialog">
         <div class="dialog-head">
           <span id="dialog-title" data-i18n="project.new">Yeni Proje</span>
-          <button id="dialog-close"><i data-lucide="x"></i></button>
+          <button id="dialog-close" aria-label="Kapat" title="Kapat (Esc)"><i data-lucide="x" aria-hidden="true"></i></button>
         </div>
         <div id="dialog-body">
           <div class="form-group">
-            <label data-i18n="project.name">Proje Adı</label>
+            <label data-i18n="project.name" for="project-name-input">Proje Adı</label>
             <input type="text" id="project-name-input" data-i18n-attr="placeholder:project.name" />
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label data-i18n="project.template">Şablon</label>
+              <label data-i18n="project.template" for="template-select">Şablon</label>
               <select id="template-select">
                 <option value="blank" data-i18n="template.blank">Boş Proje</option>
                 <option value="business" data-i18n="template.business">İş Sunumu</option>
@@ -113,7 +144,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label data-i18n="project.theme">Tema</label>
+              <label data-i18n="project.theme" for="project-theme-select">Tema</label>
               <select id="project-theme-select"></select>
             </div>
           </div>
@@ -125,16 +156,15 @@
       </div>
     </div>
 
-    <!-- Rename Dialog -->
-    <div id="rename-overlay" class="hidden">
+    <div id="rename-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="rename-title">
       <div id="rename-dialog">
         <div class="dialog-head">
-          <span data-i18n="project.rename">Yeniden Adlandır</span>
-          <button id="rename-close"><i data-lucide="x"></i></button>
+          <span id="rename-title" data-i18n="project.rename">Yeniden Adlandır</span>
+          <button id="rename-close" aria-label="Kapat"><i data-lucide="x" aria-hidden="true"></i></button>
         </div>
         <div class="dialog-body">
           <div class="form-group">
-            <label data-i18n="project.newName">Yeni Ad</label>
+            <label data-i18n="project.newName" for="rename-input">Yeni Ad</label>
             <input type="text" id="rename-input" />
           </div>
         </div>
@@ -145,47 +175,45 @@
       </div>
     </div>
 
-    <!-- Context Menu -->
-    <div id="ctx-menu" class="hidden">
-      <div class="ctx-item" data-action="open"><i data-lucide="file-text"></i> <span data-i18n="context.open">Aç</span></div>
-      <div class="ctx-item" data-action="rename"><i data-lucide="pencil"></i> <span data-i18n="context.rename">Yeniden Adlandır</span></div>
-      <div class="ctx-item" data-action="duplicate"><i data-lucide="copy"></i> <span data-i18n="context.duplicate">Kopyala</span></div>
-      <div class="ctx-item" data-action="export"><i data-lucide="download"></i> <span data-i18n="context.export">Dışa Aktar</span></div>
-      <div class="ctx-sep"></div>
-      <div class="ctx-item" data-action="favorite"><i data-lucide="star"></i> <span data-i18n="context.favorite">Favorilere Ekle</span></div>
-      <div class="ctx-sep"></div>
-      <div class="ctx-item ctx-danger" data-action="delete"><i data-lucide="trash-2"></i> <span data-i18n="context.delete">Sil</span></div>
+    <div id="ctx-menu" class="hidden" role="menu">
+      <div class="ctx-item" data-action="open" role="menuitem" tabindex="0"><i data-lucide="file-text" aria-hidden="true"></i> <span data-i18n="context.open">Aç</span></div>
+      <div class="ctx-item" data-action="rename" role="menuitem" tabindex="0"><i data-lucide="pencil" aria-hidden="true"></i> <span data-i18n="context.rename">Yeniden Adlandır</span></div>
+      <div class="ctx-item" data-action="duplicate" role="menuitem" tabindex="0"><i data-lucide="copy" aria-hidden="true"></i> <span data-i18n="context.duplicate">Kopyala</span></div>
+      <div class="ctx-item" data-action="export" role="menuitem" tabindex="0"><i data-lucide="download" aria-hidden="true"></i> <span data-i18n="context.export">Dışa Aktar</span></div>
+      <div class="ctx-sep" role="separator"></div>
+      <div class="ctx-item" data-action="favorite" role="menuitem" tabindex="0"><i data-lucide="star" aria-hidden="true"></i> <span data-i18n="context.favorite">Favorilere Ekle</span></div>
+      <div class="ctx-sep" role="separator"></div>
+      <div class="ctx-item ctx-danger" data-action="delete" role="menuitem" tabindex="0"><i data-lucide="trash-2" aria-hidden="true"></i> <span data-i18n="context.delete">Sil</span></div>
     </div>
 
-    <!-- Theme Editor Dialog -->
-    <div id="theme-dlg-overlay" class="hidden">
+    <div id="theme-dlg-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="theme-dlg-title">
       <div id="theme-dlg">
         <div class="dialog-head">
           <span id="theme-dlg-title" data-i18n="theme.editTitle">Tema Düzenle</span>
-          <button id="theme-dlg-close"><i data-lucide="x"></i></button>
+          <button id="theme-dlg-close" aria-label="Kapat"><i data-lucide="x" aria-hidden="true"></i></button>
         </div>
         <div id="theme-dlg-body">
           <div class="form-group">
-            <label data-i18n="theme.name">Tema Adı</label>
+            <label data-i18n="theme.name" for="th-name">Tema Adı</label>
             <input type="text" id="th-name" />
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label data-i18n="theme.canvasBg">Arkaplan</label>
+              <label data-i18n="theme.canvasBg" for="th-canvasBg">Arkaplan</label>
               <input type="color" id="th-canvasBg" value="#ffffff" />
             </div>
             <div class="form-group">
-              <label data-i18n="theme.titleColor">Başlık Rengi</label>
+              <label data-i18n="theme.titleColor" for="th-titleColor">Başlık Rengi</label>
               <input type="color" id="th-titleColor" value="#222222" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label data-i18n="theme.textColor">Metin Rengi</label>
+              <label data-i18n="theme.textColor" for="th-textColor">Metin Rengi</label>
               <input type="color" id="th-textColor" value="#333333" />
             </div>
             <div class="form-group">
-              <label data-i18n="theme.titleFont">Başlık Yazı Tipi</label>
+              <label data-i18n="theme.titleFont" for="th-titleFont">Başlık Yazı Tipi</label>
               <select id="th-titleFont">
                 <option value="Arial">Arial</option>
                 <option value="Helvetica">Helvetica</option>
@@ -200,7 +228,7 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label data-i18n="theme.textFont">Metin Yazı Tipi</label>
+              <label data-i18n="theme.textFont" for="th-textFont">Metin Yazı Tipi</label>
               <select id="th-textFont">
                 <option value="Arial">Arial</option>
                 <option value="Helvetica">Helvetica</option>
@@ -213,7 +241,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label data-i18n="theme.animType">Animasyon</label>
+              <label data-i18n="theme.animType" for="th-animType">Animasyon</label>
               <select id="th-animType">
                 <option value="fade">Fade</option>
                 <option value="slide-up">Slide Up</option>
@@ -229,10 +257,10 @@
             </div>
           </div>
           <div class="form-group">
-            <label data-i18n="theme.animDuration">Animasyon Süresi (sn)</label>
+            <label data-i18n="theme.animDuration" for="th-animDuration">Animasyon Süresi (sn)</label>
             <input type="number" id="th-animDuration" value="0.5" step="0.1" min="0.1" max="5" />
           </div>
-          <div id="th-preview" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center">
+          <div id="th-preview" style="margin-top:8px;border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center" aria-label="Tema Önizleme Alanı">
             <div id="th-preview-title" style="font-size:20px;font-weight:700;margin-bottom:4px" data-i18n="theme.previewTitle">Başlık Önizlemesi</div>
             <div id="th-preview-text" style="font-size:14px" data-i18n="theme.previewText">Metin önizlemesi</div>
           </div>
@@ -245,40 +273,39 @@
       </div>
     </div>
 
-    <!-- Settings Panel -->
-    <div id="settings-overlay" class="hidden">
+    <div id="settings-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="Ayarlar Menüsü">
       <div id="settings-panel">
         <div class="settings-head">
           <span class="settings-title" data-i18n="settings.title">Ayarlar</span>
-          <button id="settings-close"><i data-lucide="x"></i></button>
+          <button id="settings-close" aria-label="Kapat"><i data-lucide="x" aria-hidden="true"></i></button>
         </div>
-        <div class="settings-tabs">
-          <button class="settings-tab active" data-tab="general" data-i18n="settings.general">Genel</button>
-          <button class="settings-tab" data-tab="editor" data-i18n="settings.editor">Düzenleyici</button>
-          <button class="settings-tab" data-tab="shortcuts" data-i18n="settings.shortcuts">Kısayollar</button>
-          <button class="settings-tab" data-tab="about" data-i18n="settings.about">Hakkında</button>
+        <div class="settings-tabs" role="tablist">
+          <button class="settings-tab active" data-tab="general" data-i18n="settings.general" role="tab">Genel</button>
+          <button class="settings-tab" data-tab="editor" data-i18n="settings.editor" role="tab">Düzenleyici</button>
+          <button class="settings-tab" data-tab="shortcuts" data-i18n="settings.shortcuts" role="tab">Kısayollar</button>
+          <button class="settings-tab" data-tab="about" data-i18n="settings.about" role="tab">Hakkında</button>
         </div>
         <div class="settings-body">
-          <div class="settings-tab-content active" id="tab-general">
+          <div class="settings-tab-content active" id="tab-general" role="tabpanel">
             <div class="sg">
               <label class="sg-label" data-i18n="settings.theme">Tema</label>
               <div class="theme-cards">
-                <div class="theme-card" data-theme="dark">
+                <div class="theme-card" data-theme="dark" role="button" tabindex="0">
                   <div class="theme-card-preview theme-card-dark"></div>
                   <span data-i18n="settings.dark">Koyu</span>
                 </div>
-                <div class="theme-card" data-theme="light">
+                <div class="theme-card" data-theme="light" role="button" tabindex="0">
                   <div class="theme-card-preview theme-card-light"></div>
                   <span data-i18n="settings.light">Açık</span>
                 </div>
-                <div class="theme-card" data-theme="system">
+                <div class="theme-card" data-theme="system" role="button" tabindex="0">
                   <div class="theme-card-preview theme-card-system"></div>
                   <span data-i18n="settings.system">Sistem</span>
                 </div>
               </div>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.language">Dil</label>
+              <label class="sg-label" data-i18n="settings.language" for="set-language">Dil</label>
               <select id="set-language">
                 <option value="tr" data-i18n="lang.tr">Türkçe</option>
                 <option value="en" data-i18n="lang.en">English</option>
@@ -291,7 +318,7 @@
               </label>
             </div>
             <div class="sg" id="sg-autosave-interval">
-              <label class="sg-label" data-i18n="settings.autoSaveInterval">Kaydetme Aralığı</label>
+              <label class="sg-label" data-i18n="settings.autoSaveInterval" for="set-autosave-interval">Kaydetme Aralığı</label>
               <select id="set-autosave-interval">
                 <option value="30" data-i18n="autosave.30sec">30 saniye</option>
                 <option value="60" data-i18n="autosave.1min">1 dakika</option>
@@ -300,7 +327,7 @@
               </select>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultTemplate">Varsayılan Şablon</label>
+              <label class="sg-label" data-i18n="settings.defaultTemplate" for="set-default-template">Varsayılan Şablon</label>
               <select id="set-default-template">
                 <option value="blank" data-i18n="template.blank">Boş Proje</option>
                 <option value="business" data-i18n="template.business">İş Sunumu</option>
@@ -309,7 +336,7 @@
               </select>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.recentCount">Son Proje Sayısı</label>
+              <label class="sg-label" data-i18n="settings.recentCount" for="set-recent-count">Son Proje Sayısı</label>
               <select id="set-recent-count">
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -318,7 +345,7 @@
               </select>
             </div>
           </div>
-          <div class="settings-tab-content" id="tab-editor">
+          <div class="settings-tab-content" id="tab-editor" role="tabpanel">
             <div class="sg">
               <label class="sg-label">
                 <span data-i18n="settings.snapToGrid">Izgaraya Yapış</span>
@@ -326,7 +353,7 @@
               </label>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.gridSize">Izgara Aralığı</label>
+              <label class="sg-label" data-i18n="settings.gridSize" for="set-grid-size">Izgara Aralığı</label>
               <select id="set-grid-size">
                 <option value="10">10px</option>
                 <option value="20">20px</option>
@@ -334,7 +361,7 @@
               </select>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultFont">Varsayılan Yazı Tipi</label>
+              <label class="sg-label" data-i18n="settings.defaultFont" for="set-font-family">Varsayılan Yazı Tipi</label>
               <select id="set-font-family">
                 <option value="Arial">Arial</option>
                 <option value="Helvetica">Helvetica</option>
@@ -345,7 +372,7 @@
               </select>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.defaultFontSize">Varsayılan Yazı Boyutu</label>
+              <label class="sg-label" data-i18n="settings.defaultFontSize" for="set-font-size">Varsayılan Yazı Boyutu</label>
               <select id="set-font-size">
                 <option value="14">14px</option>
                 <option value="16">16px</option>
@@ -355,7 +382,7 @@
               </select>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.canvasBg">Canvas Arkaplan Rengi</label>
+              <label class="sg-label" data-i18n="settings.canvasBg" for="set-canvas-bg">Canvas Arkaplan Rengi</label>
               <input type="color" id="set-canvas-bg" value="#1a1a1a">
             </div>
             <div class="sg">
@@ -365,7 +392,7 @@
               </label>
             </div>
             <div class="sg">
-              <label class="sg-label" data-i18n="settings.thumbSize">Thumbnail Boyutu</label>
+              <label class="sg-label" data-i18n="settings.thumbSize" for="set-thumb-size">Thumbnail Boyutu</label>
               <select id="set-thumb-size">
                 <option value="small" data-i18n="thumbSize.small">Küçük</option>
                 <option value="medium" data-i18n="thumbSize.medium">Orta</option>
@@ -373,7 +400,7 @@
               </select>
             </div>
           </div>
-          <div class="settings-tab-content" id="tab-shortcuts">
+          <div class="settings-tab-content" id="tab-shortcuts" role="tabpanel">
             <div class="shortcuts-list">
               <div class="sc-item"><span class="sc-key">Ctrl+Z</span><span class="sc-desc" data-i18n="shortcuts.undo">Geri Al</span></div>
               <div class="sc-item"><span class="sc-key">Ctrl+Y</span><span class="sc-desc" data-i18n="shortcuts.redo">İleri Al</span></div>
@@ -389,13 +416,13 @@
               <div class="sc-item"><span class="sc-key">Escape</span><span class="sc-desc" data-i18n="shortcuts.close">Dialog/Menü Kapat</span></div>
             </div>
           </div>
-          <div class="settings-tab-content" id="tab-about">
+          <div class="settings-tab-content" id="tab-about" role="tabpanel">
             <div class="about-section">
               <div class="about-logo">oSlide2</div>
               <div class="about-version">v0.2.1</div>
               <div class="about-desc" data-i18n="about.desc">Electron tabanlı modern sunum uygulaması</div>
               <div class="about-links">
-                <a href="#" id="about-github" class="about-link"><i data-lucide="github"></i> GitHub</a>
+                <a href="#" id="about-github" class="about-link"><i data-lucide="github" aria-hidden="true"></i> GitHub</a>
               </div>
               <div class="about-tech">
                 <span>Electron</span><span>Node.js</span><span>Lucide</span>
@@ -410,23 +437,23 @@
       </div>
     </div>
 
-    <div id="dev-console" class="hidden">
+    <div id="dev-console" class="hidden" role="region" aria-label="Geliştirici Konsolu">
       <div class="dc-head">
         <span>Dev Console</span>
-        <button id="dc-close"><i data-lucide="x"></i></button>
+        <button id="dc-close" aria-label="Konsolu Kapat"><i data-lucide="x" aria-hidden="true"></i></button>
       </div>
       <div class="dc-body">
         <div class="dc-section">
-          <div class="dc-label">Commands</div>
+          <label class="dc-label" for="dc-input">Commands</label>
           <input type="text" id="dc-input" placeholder="Type JS expression...">
         </div>
         <div class="dc-section">
           <div class="dc-label">Output</div>
-          <pre id="dc-output"></pre>
+          <pre id="dc-output" aria-live="polite"></pre>
         </div>
         <div class="dc-section">
           <div class="dc-label">State</div>
-          <pre id="dc-state"></pre>
+          <pre id="dc-state" aria-live="polite"></pre>
         </div>
       </div>
     </div>
