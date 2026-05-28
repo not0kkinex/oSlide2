@@ -233,5 +233,7 @@
   "ai.actionLabel": "AI action",
   "ai.defaultTopic": "Presentation topic",
   "ai.thinking": "Thinking...",
-  "ai.error": "AI error"
+  "ai.error": "AI error",
+  "home.settings": "Settings",
+  "home.themeGallery": "Theme Gallery"
 }
