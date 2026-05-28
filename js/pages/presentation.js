@@ -229,6 +229,19 @@
           l.setAttribute('marker-end', 'url(#pm_' + i + '_' + el.id + ')');
           svg.appendChild(l);
           d.appendChild(svg);
+        } else if (el.type === 'chart') {
+          d.style.overflow = 'hidden'
+          const cv = document.createElement('canvas')
+          cv.style.cssText = 'width:100%;height:100%'
+          d.appendChild(cv)
+          requestAnimationFrame(() => {
+            if (window.Chart) {
+              const data = el.chartData || { labels: ['A','B','C'], datasets: [{ label: '', data: [10,20,30], backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4'] }] }
+              const type = el.chartType || 'bar'
+              try { new Chart(cv.getContext('2d'), { type, data, options: { responsive: true, maintainAspectRatio: true, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } } }) }
+              catch {}
+            }
+          })
         }
         sc.appendChild(d);
       });
