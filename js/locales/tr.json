@@ -44,6 +44,7 @@
   "toolbar.rect": "Dikdörtgen",
   "toolbar.circle": "Daire",
   "toolbar.arrow": "Ok",
+  "toolbar.chart": "Grafik",
   "toolbar.bold": "Kalın",
   "toolbar.italic": "İtalik",
   "toolbar.underline": "Altı Çizili",
@@ -78,6 +79,11 @@
   "panel.animation": "Animasyon",
   "panel.element": "Öğe",
   "panel.slide": "Slayt",
+  "panel.chartType": "Grafik Türü",
+  "panel.chartData": "Veri",
+  "panel.chartLabels": "Etiketler",
+  "panel.chartColors": "Renkler",
+  "panel.chartEdit": "Grafik Verisini Düzenle",
   "panel.animType": "Tür",
   "panel.animDuration": "Süre (sn)",
   "panel.animDelay": "Gecikme (sn)",
@@ -190,6 +196,7 @@
 
   "element.text": "Metin",
   "element.title": "Başlık",
+  "element.chart": "Grafik",
 
   "context.open": "Aç",
   "context.rename": "Yeniden Adlandır",
@@ -327,6 +334,8 @@
   "ai.action.setTextColor": "Metin rengi {0} yap\u0131ld\u0131",
   "ai.action.setBackground": "Arkaplan {0} yap\u0131ld\u0131",
   "ai.action.processing": "\u0130\u015flem yap\u0131l\u0131yor...",
+  "ai.action.addChart": "Grafik eklendi: {0}",
+  "ai.action.analyzeData": "Veri analiz edildi",
 
   "ai.status.thinking": "D\u00fc\u015f\u00fcn\u00fcl\u00fcyor...",
   "ai.status.waiting": "Yan\u0131t bekleniyor...",

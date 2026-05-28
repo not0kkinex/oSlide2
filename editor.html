@@ -36,6 +36,7 @@
         <button class="tb-btn" data-action="add-rect" data-i18n-attr="title:toolbar.rect"><i data-lucide="square"></i></button>
         <button class="tb-btn" data-action="add-circle" data-i18n-attr="title:toolbar.circle"><i data-lucide="circle"></i></button>
         <button class="tb-btn" data-action="add-arrow" data-i18n-attr="title:toolbar.arrow"><i data-lucide="arrow-right"></i></button>
+        <button class="tb-btn" data-action="add-chart" data-i18n-attr="title:toolbar.chart"><i data-lucide="bar-chart-3"></i></button>
         <div class="sep-v"></div>
       </div>
 
@@ -428,6 +429,49 @@
     </div>
   </div>
 
+  <div id="chart-dialog-overlay" class="hidden">
+    <div id="chart-dialog">
+      <div class="dialog-head">
+        <span data-i18n="panel.chartEdit">Grafik Verisini Düzenle</span>
+        <button id="chart-dialog-close"><i data-lucide="x"></i></button>
+      </div>
+      <div class="chart-dialog-body">
+        <div class="form-group">
+          <label data-i18n="panel.chartType">Grafik Türü</label>
+          <select id="chart-type-select">
+            <option value="bar">Bar</option>
+            <option value="line">Line</option>
+            <option value="pie">Pie</option>
+            <option value="doughnut">Doughnut</option>
+            <option value="polarArea">Polar Area</option>
+            <option value="radar">Radar</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="panel.chartLabels">Etiketler (virgülle ayır)</label>
+          <input type="text" id="chart-labels-input" placeholder="A, B, C">
+        </div>
+        <div class="form-group">
+          <label data-i18n="panel.chartData">Veri (virgülle ayır)</label>
+          <input type="text" id="chart-data-input" placeholder="10, 20, 30">
+        </div>
+        <div class="form-group" id="chart-label-input-group">
+          <label data-i18n="panel.chart">Dataset Adı</label>
+          <input type="text" id="chart-dataset-label" placeholder="Veri">
+        </div>
+        <div class="form-group" id="chart-colors-group">
+          <label data-i18n="panel.chartColors">Renkler (virgülle ayır, hex)</label>
+          <input type="text" id="chart-colors-input" placeholder="#ffd700, #ff6b6b, #4ecdc4">
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text-muted)" id="chart-preview-info"></div>
+      </div>
+      <div class="dialog-foot">
+        <button id="chart-dialog-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
+        <button id="chart-dialog-apply" class="btn-primary" data-i18n="settings.save">Uygula</button>
+      </div>
+    </div>
+  </div>
+
   <div id="editor-ctx-menu" class="ctx-menu hidden">
     <div class="ctx-item" data-action="copy"><i data-lucide="copy"></i> <span data-i18n="context.copy">Kopyala</span></div>
     <div class="ctx-item" data-action="paste"><i data-lucide="clipboard-paste"></i> <span data-i18n="context.paste">Yapıştır</span></div>
@@ -460,12 +504,15 @@
   </div>
 
   <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
+  <script src="node_modules/chart.js/dist/chart.umd.js"></script>
   <script src="js/components/toast.js"></script>
   <script src="js/services/theme.js"></script>
   <script src="js/services/shortcuts.js"></script>
   <script src="js/services/i18n.js"></script>
   <script src="js/data/templates.js"></script>
   <script src="js/services/projectManager.js"></script>
+  <script src="js/services/chartAI.js"></script>
+  <script src="js/services/chartRenderer.js"></script>
   <script src="js/services/ai.js"></script>
   <script src="js/core/state.js"></script>
   <script src="js/core/actions.js"></script>

@@ -17,6 +17,8 @@ function contentKey(el) {
       return `c:${el.fill}|${el.borderColor}|${el.borderWidth}`
     case 'arrow':
       return `a:${el.fill}|${el.borderWidth}|${el.width}|${el.height}`
+    case 'chart':
+      return `ch:${el.chartType}|${JSON.stringify(el.chartData || {})}`
     default:
       return ''
   }
@@ -66,6 +68,7 @@ function renderSlide() {
 
     const ck = contentKey(el);
     if (isNew || d.dataset.ck !== ck) {
+      if (el.type === 'chart' && window.chartDestroy) chartDestroy(el.id);
       d.innerHTML = '';
       renderEl(d, el);
       d.dataset.ck = ck;
@@ -138,6 +141,13 @@ function renderEl(d, el) {
       svg.appendChild(l);
       svg.style.pointerEvents = 'none';
       d.appendChild(svg);
+      break;
+    case 'chart':
+      const cv = document.createElement('canvas');
+      cv.style.cssText = 'width:100%;height:100%;pointer-events:none';
+      d.appendChild(cv);
+      d.style.overflow = 'hidden';
+      requestAnimationFrame(() => chartRender(cv, el));
       break;
   }
 }
@@ -267,6 +277,9 @@ function renderThumbs() {
         thumbHtml += `<div style="${st};background:${el.fill||'#ffd700'};border-radius:50%"></div>`;
       } else if (el.type === 'arrow') {
         thumbHtml += `<div style="${st};border-top:${(el.borderWidth||3)*0.2}px solid ${el.fill||'#ffd700'}"></div>`;
+      } else if (el.type === 'chart') {
+        const ct = el.chartType || 'bar';
+        thumbHtml += `<div style="${st};font-size:8px;color:#888;display:flex;align-items:center;justify-content:center">${ct === 'pie' ? '\u25D0' : '\u25AE'}</div>`;
       }
     });
 

@@ -39,6 +39,67 @@ async function addImage() {
   }
 }
 
+function addChart() {
+  addEl('chart')
+  setTimeout(() => { const e = selEl(); if (e) openChartDialog(e) }, 100)
+}
+
+function openChartDialog(el) {
+  const overlay = document.getElementById('chart-dialog-overlay')
+  if (!overlay) return
+  const cd = el.chartData || { labels: ['A','B','C'], datasets: [{ label: I18n.t('element.chart'), data: [10,20,30], backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4'] }] }
+  const ds = cd.datasets?.[0] || { label: I18n.t('element.chart'), data: [10,20,30] }
+  document.getElementById('chart-type-select').value = el.chartType || 'bar'
+  document.getElementById('chart-labels-input').value = (cd.labels || []).join(', ')
+  document.getElementById('chart-data-input').value = (ds.data || []).join(', ')
+  document.getElementById('chart-dataset-label').value = ds.label || ''
+  document.getElementById('chart-colors-input').value = (ds.backgroundColor || []).join(', ')
+  overlay.classList.remove('hidden')
+
+  const apply = document.getElementById('chart-dialog-apply')
+  const close = document.getElementById('chart-dialog-close')
+  const cancel = document.getElementById('chart-dialog-cancel')
+
+  function applyChart() {
+    const labels = document.getElementById('chart-labels-input').value.split(',').map(s => s.trim()).filter(Boolean)
+    const data = document.getElementById('chart-data-input').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
+    const label = document.getElementById('chart-dataset-label').value.trim() || I18n.t('element.chart')
+    const colors = document.getElementById('chart-colors-input').value.split(',').map(s => s.trim()).filter(Boolean)
+    const chartType = document.getElementById('chart-type-select').value
+    const bgColors = colors.length >= data.length ? colors : ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#a29bfe','#fd79a8','#6c5ce7','#00b4d9'].slice(0, data.length || 1)
+    const chartData = {
+      labels: labels.length === data.length ? labels : data.map((_, i) => String(i + 1)),
+      datasets: [{ label, data, backgroundColor: chartType === 'line' ? bgColors[0] : bgColors, borderColor: chartType === 'line' ? bgColors[0] : bgColors, borderWidth: 1, tension: 0.3, fill: chartType === 'line' }]
+    }
+    save()
+    const e = selEl()
+    if (e) {
+      e.chartType = chartType
+      e.chartData = chartData
+      renderSlide()
+      showPanel(e)
+    }
+    cleanup()
+  }
+
+  function cleanup() {
+    overlay.classList.add('hidden')
+    apply.removeEventListener('click', applyChart)
+    close.removeEventListener('click', cleanup)
+    cancel.removeEventListener('click', cleanup)
+    overlay.removeEventListener('click', onClickOutside)
+  }
+
+  function onClickOutside(e) {
+    if (e.target === overlay) cleanup()
+  }
+
+  apply.addEventListener('click', applyChart)
+  close.addEventListener('click', cleanup)
+  cancel.addEventListener('click', cleanup)
+  overlay.addEventListener('click', onClickOutside)
+}
+
 function newProject() {
   if (App.dirty && !confirm(I18n.t('editor.unsavedChanges'))) return;
   App.slides = [{
@@ -348,6 +409,7 @@ function init() {
         case 'add-rect': addEl('rect'); break;
         case 'add-circle': addEl('circle'); break;
         case 'add-arrow': addEl('arrow'); break;
+        case 'add-chart': addChart(); break;
         case 'delete': delEl(); break;
         case 'bold': toggleBold(); break;
         case 'italic': toggleItalic(); break;
@@ -586,6 +648,7 @@ function init() {
         case 'add-rect': addEl('rect'); break;
         case 'add-circle': addEl('circle'); break;
         case 'add-arrow': addEl('arrow'); break;
+        case 'add-chart': addChart(); break;
         case 'start-presentation': startPresentation(); break;
         case 'export-pdf': exportPDF(); break;
         case 'export-png': exportPNG(); break;
@@ -597,6 +660,8 @@ function init() {
 }
 
 window.addImage = addImage;
+window.addChart = addChart;
+window.openChartDialog = openChartDialog;
 window.newProject = newProject;
 window.getData = getData;
 window.loadData = loadData;

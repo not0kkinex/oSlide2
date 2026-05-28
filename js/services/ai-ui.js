@@ -74,7 +74,9 @@ function initAI() {
       generate_slides: I18n.t('ai.action.generateSlides', String(action.count || 3)),
       set_animations: I18n.t('ai.action.setAnimations', action.animType || 'fade'),
       set_text_color: I18n.t('ai.action.setTextColor', action.color || '#333'),
-      set_background: I18n.t('ai.action.setBackground', action.color || '#fff')
+      set_background: I18n.t('ai.action.setBackground', action.color || '#fff'),
+      add_chart: 'Grafik ekleniyor' + (action.chartType ? ': ' + action.chartType : ''),
+      analyze_data: 'Veri analiz ediliyor' + (action.data ? ' (' + ((action.data.labels?.length || 0) + ' etiket)') : '')
     }
     return map[action.action] || I18n.t('ai.action.processing')
   }
@@ -184,7 +186,7 @@ function initAI() {
 
   async function execAction(action) {
     const s = slide()
-    if (!s && !['add_slide', 'delete_slide', 'generate_slides', 'set_all_backgrounds', 'set_background'].includes(action.action)) return ''
+    if (!s && !['add_slide', 'delete_slide', 'generate_slides', 'set_all_backgrounds', 'set_background', 'add_chart', 'analyze_data'].includes(action.action)) return ''
 
     save()
     const th = App.projectTheme
@@ -225,6 +227,10 @@ function initAI() {
         if (type === 'arrow') {
           el.fill = action.fill || defs.fill || '#ffd700'
           el.borderWidth = action.borderWidth ?? defs.borderWidth ?? 3
+        }
+        if (type === 'chart') {
+          el.chartType = action.chartType || 'bar'
+          el.chartData = action.chartData || { labels: ['A','B','C'], datasets: [{ label: 'Veri', data: [10,20,30], backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4'] }] }
         }
         s.elements.push(el)
         App.sel = el.id
@@ -380,6 +386,50 @@ function initAI() {
         const bg2 = action.color || '#fff'
         App.slides.forEach(sl => { sl.background = bg2 })
         desc = I18n.t('ai.result.allBgsChanged', bg2)
+        break
+      }
+      case 'add_chart': {
+        const chartType = action.chartType || 'bar'
+        const labels = action.labels || ['A','B','C']
+        const values = action.values || [10, 20, 30]
+        const rawData = action.data
+        let chartData
+
+        if (rawData && typeof rawData === 'string') {
+          const parsed = chartParseCSV(rawData)
+          if (parsed) chartData = parsed
+        }
+        if (!chartData && action.data?.labels) {
+          chartData = action.data
+        }
+        if (!chartData && action.data?.datasets) {
+          chartData = action.data
+        }
+        if (!chartData) {
+          chartData = {
+            labels,
+            datasets: [{ label: I18n.t('element.chart'), data: values, backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4'], borderWidth: 1 }]
+          }
+        }
+
+        const el = {
+          id: id(), type: 'chart', x: 60, y: 40, width: 500, height: 350,
+          chartType, chartData, opacity: 1, rotation: 0,
+          animType: 'none', animDuration: 0.5, animDelay: 0
+        }
+        s.elements.push(el)
+        App.sel = el.id
+        desc = `Grafik eklendi: ${chartType} (${(chartData.labels?.length || 0)} kategori)`
+        break
+      }
+      case 'analyze_data': {
+        const data = action.data
+        if (data?.datasets?.[0]?.data) {
+          const suggestion = chartSuggest(data.datasets[0].data.map(String))
+          desc = `Analiz: ${suggestion.insights.join(', ')}${suggestion.warnings.length ? ' | Uyarı: ' + suggestion.warnings.join(', ') : ''}`
+        } else {
+          desc = 'Veri analiz edilemedi'
+        }
         break
       }
       default:

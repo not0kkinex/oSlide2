@@ -16,15 +16,15 @@
     "directories": {
       "output": "dist"
     },
-  "files": [
-    "**/*",
-    "!dist",
-    "!dist-installer",
-    "!installer",
-    "!installer_app",
-    "!node_modules/electron",
-    "!node_modules/electron-builder"
-  ],
+    "files": [
+      "**/*",
+      "!dist",
+      "!dist-installer",
+      "!installer",
+      "!installer_app",
+      "!node_modules/electron",
+      "!node_modules/electron-builder"
+    ],
     "win": {
       "target": "portable",
       "icon": "assets/icon.png",
@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
+    "chart.js": "^4.5.1",
     "lucide": "^1.16.0"
   }
 }

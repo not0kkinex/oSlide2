@@ -44,6 +44,7 @@
   "toolbar.rect": "Rectangle",
   "toolbar.circle": "Circle",
   "toolbar.arrow": "Arrow",
+  "toolbar.chart": "Chart",
   "toolbar.bold": "Bold",
   "toolbar.italic": "Italic",
   "toolbar.underline": "Underline",
@@ -78,6 +79,11 @@
   "panel.animation": "Animation",
   "panel.element": "Element",
   "panel.slide": "Slide",
+  "panel.chartType": "Chart Type",
+  "panel.chartData": "Data",
+  "panel.chartLabels": "Labels",
+  "panel.chartColors": "Colors",
+  "panel.chartEdit": "Edit Chart Data",
   "panel.animType": "Type",
   "panel.animDuration": "Duration (s)",
   "panel.animDelay": "Delay (s)",
@@ -190,6 +196,7 @@
 
   "element.text": "Text",
   "element.title": "Title",
+  "element.chart": "Chart",
 
   "context.open": "Open",
   "context.rename": "Rename",
@@ -327,6 +334,8 @@
   "ai.action.setTextColor": "Text color set to {0}",
   "ai.action.setBackground": "Background set to {0}",
   "ai.action.processing": "Processing...",
+  "ai.action.addChart": "Chart added: {0}",
+  "ai.action.analyzeData": "Data analyzed",
 
   "ai.status.thinking": "Thinking...",
   "ai.status.waiting": "Waiting for response...",

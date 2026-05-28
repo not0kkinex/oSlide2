@@ -78,7 +78,8 @@ const EL_DEFAULTS = {
   image:   { width: 300, height: 225, opacity: 1, rotation: 0, ...ANIM_DEFAULTS },
   rect:    { fill: '#ffd700', borderColor: '#ffd700', borderWidth: 2, borderRadius: 0, width: 150, height: 100, opacity: 1, rotation: 0, ...ANIM_DEFAULTS },
   circle:  { fill: '#ffd700', borderColor: '#ffd700', borderWidth: 2, width: 120, height: 120, opacity: 1, rotation: 0, ...ANIM_DEFAULTS },
-  arrow:   { fill: '#ffd700', borderWidth: 3, width: 200, height: 20, opacity: 1, rotation: 0, ...ANIM_DEFAULTS }
+  arrow:   { fill: '#ffd700', borderWidth: 3, width: 200, height: 20, opacity: 1, rotation: 0, ...ANIM_DEFAULTS },
+  chart:   { chartType: 'bar', chartData: { labels: ['A','B','C'], datasets: [{ label: 'Veri', data: [10,20,30], backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4'] }] }, width: 500, height: 350, opacity: 1, rotation: 0, ...ANIM_DEFAULTS }
 };
 
 // Legacy aliases for backward compat

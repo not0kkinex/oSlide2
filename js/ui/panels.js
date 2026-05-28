@@ -73,6 +73,13 @@ function showPanel(el) {
     html += '</div>';
   }
 
+  if (el.type === 'chart') {
+    f(I18n.t('panel.chartType'), 'chartType', 's', {
+      options: ['bar','line','pie','doughnut','polarArea','radar'].map(x => ({ v: x, l: x.charAt(0).toUpperCase() + x.slice(1) }))
+    });
+    html += '<div class="pg"><button class="btn-secondary" id="chart-edit-btn" style="width:100%"><i data-lucide="bar-chart-3"></i> ' + I18n.t('panel.chartEdit') + '</button></div>';
+  }
+
   html += '<div class="pg-sep"></div><div class="pg-section-label">' + I18n.t('panel.animation') + '</div>';
   f(I18n.t('panel.animType'), 'animType', 's', {
     options: ['none','fade','slide-up','slide-down','slide-left','slide-right','zoom-in','zoom-out','bounce','pulse'].map(x => ({ v: x, l: I18n.t('anim.' + x.replace(/-([a-z])/g, (_, c) => c.toUpperCase())) }))
@@ -104,6 +111,15 @@ function showPanel(el) {
     });
   }
   if (window.lucide) lucide.createIcons();
+
+  const chartEditBtn = document.getElementById('chart-edit-btn');
+  if (chartEditBtn) {
+    chartEditBtn.addEventListener('click', () => {
+      const e = selEl();
+      if (e && e.type === 'chart') openChartDialog(e);
+    });
+  }
+
   body.querySelectorAll('input,select').forEach(inp => {
     inp.addEventListener('change', () => {
       const k = inp.dataset.k;

@@ -7,7 +7,13 @@ JSON aksiyon döndürerek slaytları düzenlersin. Her aksiyona "explain" alanı
 ## ELEMENT ACTIONS
 
 **add_element** — Öğe ekle
-{"action":"add_element","type":"title|text|image|rect|circle|arrow","content":"...","x":40,"y":20,"width":840,"height":65,"fontSize":42,"color":"#222","bold":true,"textAlign":"center","explain":"..."}
+{"action":"add_element","type":"title|text|image|rect|circle|arrow|chart","content":"...","x":40,"y":20,"width":840,"height":65,"fontSize":42,"color":"#222","bold":true,"textAlign":"center","explain":"..."}
+
+**add_chart** — Grafik ekle (veri analizi + öneri)
+{"action":"add_chart","data":"CSV veya JSON verisi","chartType":"bar|line|pie|doughnut","labels":["...","..."],"values":[10,20,30],"explain":"..."}
+
+**analyze_data** — Veriyi analiz et ve chart öner
+{"action":"analyze_data","data":{"labels":["...","..."],"datasets":[{"label":"...","data":[...]}]},"explain":"..."}
 
 **delete_element** — Öğeyi sil (id yoksa seçiliyi sil)
 {"action":"delete_element","id":"e123","explain":"..."}

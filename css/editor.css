@@ -1644,6 +1644,49 @@ input:checked + .toggle-track .toggle-thumb { left: 18px; background:var(--accen
 #ai-toggle-btn.active { color: var(--accent); }
 #ai-toggle-btn.active svg { filter: drop-shadow(0 0 6px rgba(255,215,0,0.5)); }
 
+/* ========== CHART DIALOG ========== */
+#chart-dialog-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+}
+#chart-dialog-overlay.hidden { display: none; }
+#chart-dialog {
+  background: var(--bg-surface);
+  border: 0.5px solid var(--border-default);
+  border-radius: 12px;
+  width: 420px;
+  overflow: hidden;
+}
+.chart-dialog-body {
+  padding: 16px 18px;
+}
+.chart-dialog-body .form-group {
+  margin-bottom: 12px;
+}
+.chart-dialog-body label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.chart-dialog-body input,
+.chart-dialog-body select {
+  width: 100%;
+  padding: 7px 10px;
+  background: var(--bg-input);
+  border: 0.5px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+}
+.chart-dialog-body input:focus,
+.chart-dialog-body select:focus {
+  border-color: var(--accent);
+}
+
 /* ========== SAVE TEMPLATE MODAL ========== */
 #save-template-overlay {
   position: fixed; inset: 0; z-index: 200;
