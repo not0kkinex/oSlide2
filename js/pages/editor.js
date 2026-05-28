@@ -44,7 +44,7 @@ function newProject() {
   App.slides = [{
     id: 's1', background: '#ffffff', transition: 'fade', elements: [
       { id: id(), type: 'text', content: 'oSlide2', x: 180, y: 160, width: 600, height: 100, fontSize: 64, fontFamily: 'Arial', color: '#222', bold: true, italic: false, underline: false, strikethrough: false, textAlign: 'center', bgColor: '', opacity: 1, rotation: 0 },
-      { id: id(), type: 'text', content: 'Sunumlarınızı oluşturun', x: 200, y: 280, width: 560, height: 40, fontSize: 22, fontFamily: 'Arial', color: '#666', bold: false, italic: false, underline: false, strikethrough: false, textAlign: 'center', bgColor: '', opacity: 1, rotation: 0 }
+      { id: id(), type: 'text', content: I18n.t('editor.defaultSubtitle'), x: 200, y: 280, width: 560, height: 40, fontSize: 22, fontFamily: 'Arial', color: '#666', bold: false, italic: false, underline: false, strikethrough: false, textAlign: 'center', bgColor: '', opacity: 1, rotation: 0 }
     ]
   }];
   App.cur = 0;
@@ -182,7 +182,7 @@ function openTemplateModal() {
   grid.innerHTML = window.SLIDE_TEMPLATES.map(t => `
     <div class="tpl-card" onclick="applyTemplate('${t.id}')">
       ${templatePreviewHtml(t)}
-      <span>${t.label}</span>
+      <span>${I18n.t('template.' + t.id + '.label') || t.label}</span>
     </div>
   `).join('');
   document.getElementById('template-overlay')?.classList.remove('hidden');
@@ -206,7 +206,7 @@ async function confirmSaveTemplate() {
   const desc = document.getElementById('st-desc')?.value.trim()
   const category = document.getElementById('st-category')?.value || 'temel'
   const tagsStr = document.getElementById('st-tags')?.value.trim()
-  if (!name) { Toast.error('Şablon adı gerekli', 'Template'); return }
+  if (!name) { Toast.error(I18n.t('template.nameRequired'), 'Template'); return }
 
   const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : []
   const newTemplate = {
@@ -231,7 +231,7 @@ async function confirmSaveTemplate() {
     config.userTemplates = config.userTemplates || []
     config.userTemplates.push(newTemplate)
     await window.electronAPI.saveConfig(config)
-    Toast.show('Şablon kaydedildi: ' + name, Toast.SUCCESS, 2000)
+    Toast.show(I18n.t('template.saved', name), Toast.SUCCESS, 2000)
     closeSaveTemplateDialog()
     document.getElementById('st-name').value = ''
     document.getElementById('st-desc').value = ''
@@ -243,13 +243,13 @@ async function confirmSaveTemplate() {
 
 function updateStatusBar() {
   const saveEl = document.getElementById('sb-save-status')
-  if (saveEl) saveEl.textContent = App.dirty ? 'Kaydedilmedi' : 'Kaydedildi'
+  if (saveEl) saveEl.textContent = App.dirty ? I18n.t('editor.notSaved') : I18n.t('editor.saved')
   const dot = document.querySelector('#status-bar .sb-dot')
   if (dot) dot.style.background = App.dirty ? '#ff4757' : '#1D9E75'
   const slideEl = document.getElementById('sb-slide-info')
-  if (slideEl) slideEl.textContent = `Slayt ${App.cur + 1}`
+  if (slideEl) slideEl.textContent = I18n.t('editor.slideN', String(App.cur + 1))
   const elEl = document.getElementById('sb-element-info')
-  if (elEl) elEl.textContent = App.sel ? 'Öğe seçili' : 'Seçili öğe yok'
+  if (elEl) elEl.textContent = App.sel ? I18n.t('editor.elementSelected') : I18n.t('editor.noElementSelected')
 }
 
 
@@ -414,7 +414,7 @@ function init() {
   function updateNotesStatus() {
     if (!notesStatus) return;
     notesStatus.classList.toggle('show', App.dirty);
-    notesStatus.textContent = App.dirty ? '● Değişti' : '';
+    notesStatus.textContent = App.dirty ? I18n.t('editor.changed') : '';
   }
 
   function syncNotes() {
@@ -564,7 +564,7 @@ function init() {
   if (window.electronAPI) {
     if (window.electronAPI.onFileSaved) {
       window.electronAPI.onFileSaved(function(_ref) {
-        Toast.show('Kaydedildi: ' + _ref.path, Toast.SUCCESS, 2000)
+        Toast.show(I18n.t('editor.savedTo', _ref.path), Toast.SUCCESS, 2000)
       })
     }
     if (window.electronAPI.onFileError) {

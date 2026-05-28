@@ -2,11 +2,6 @@ let aiOpen = false
 let aiMsgs = []
 let aiBusy = false
 
-/**
- * Renders Markdown to safe HTML (protocol-whitelisted)
- * @param {string} text - Markdown text
- * @returns {string} Safe HTML
- */
 function renderMD(text) {
   const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   let h = esc
@@ -22,7 +17,6 @@ function renderMD(text) {
   return `<p>${h}</p>`
 }
 
-/** Initializes AI chat UI and event listeners @returns {void} */
 function initAI() {
   const overlay = document.getElementById('ai-overlay')
   const drawer = document.getElementById('ai-drawer')
@@ -40,8 +34,70 @@ function initAI() {
         if (el.type === 'title' || el.type === 'text') return `${el.type}: ${el.content || ''}`
         return ''
       }).filter(Boolean)
-      return `【Slayt ${i+1}】\n${lines.join('\n')}`
+      return `【Slayt ${i+1}】${s.background ? ` bg:${s.background}` : ''}\n${lines.join('\n')}`
     }).join('\n\n')
+  }
+
+  function buildSelectionContext() {
+    const el = selEl()
+    if (!el) return ''
+    return `${el.type}: "${el.content || ''}" (x:${el.x}, y:${el.y}, ${el.width}x${el.height})`
+  }
+
+  function buildSystemMsg(lastResult) {
+    const ctx = buildSlideContext()
+    const selCtx = buildSelectionContext()
+    let msg = `Mevcut sunum: ${App.slides.length} slayt, sıradaki: ${App.cur + 1}`
+    if (ctx) msg += `\n${ctx}`
+    if (selCtx) msg += `\n\nSeçili:\n${selCtx}`
+    if (lastResult) msg += `\n\nSon işlem:\n${lastResult}`
+    return msg
+  }
+
+  function describeAction(action) {
+    const typeLabel = I18n.t('element.' + (action.type || 'text')) || action.type
+    const map = {
+      add_element: I18n.t('ai.action.addElement', action.content || '', typeLabel),
+      delete_element: I18n.t('ai.action.deleteElement'),
+      update_element: I18n.t('ai.action.updateElement', action.props?.content ? ': ' + action.props.content : ''),
+      duplicate_element: I18n.t('ai.action.duplicateElement'),
+      align_element: I18n.t('ai.action.alignElement', action.align || 'center'),
+      style_all_elements: I18n.t('ai.action.styleAllElements'),
+      add_slide: I18n.t('ai.action.addSlide'),
+      delete_slide: I18n.t('ai.action.deleteSlide'),
+      duplicate_slide: I18n.t('ai.action.duplicateSlide'),
+      set_slide_background: I18n.t('ai.action.setSlideBg', action.color || '#fff'),
+      set_all_backgrounds: I18n.t('ai.action.setAllBgs', action.color || '#fff'),
+      set_slide_transition: I18n.t('ai.action.setTransition', action.transition || 'fade'),
+      clear_slide: I18n.t('ai.action.clearSlide'),
+      batch: I18n.t('ai.action.batch', String(action.actions?.length || 0)),
+      generate_slides: I18n.t('ai.action.generateSlides', String(action.count || 3)),
+      set_animations: I18n.t('ai.action.setAnimations', action.animType || 'fade'),
+      set_text_color: I18n.t('ai.action.setTextColor', action.color || '#333'),
+      set_background: I18n.t('ai.action.setBackground', action.color || '#fff')
+    }
+    return map[action.action] || I18n.t('ai.action.processing')
+  }
+
+  function agentStep(text) {
+    hideWelcome()
+    const div = document.createElement('div')
+    div.className = 'ai-step running'
+    div.dataset.text = text
+    div.innerHTML = `<i data-lucide="loader" class="ai-step-icon ai-step-spin"></i> ${text}`
+    msgsEl.appendChild(div)
+    msgsEl.scrollTop = msgsEl.scrollHeight
+    if (window.lucide) lucide.createIcons()
+    return div
+  }
+
+  function finishStep(el, icon) {
+    const text = el.dataset.text || ''
+    const cls = icon === 'alert-triangle' ? 'error' : 'done'
+    el.className = `ai-step ${cls}`
+    el.innerHTML = `<i data-lucide="${icon}" class="ai-step-icon"></i> ${text}`
+    if (window.lucide) lucide.createIcons()
+    msgsEl.scrollTop = msgsEl.scrollHeight
   }
 
   function addMsg(role, content) {
@@ -126,6 +182,219 @@ function initAI() {
     return div
   }
 
+  async function execAction(action) {
+    const s = slide()
+    if (!s && !['add_slide', 'delete_slide', 'generate_slides', 'set_all_backgrounds', 'set_background'].includes(action.action)) return ''
+
+    save()
+    const th = App.projectTheme
+    let desc = ''
+
+    switch (action.action) {
+      case 'add_element': {
+        const type = action.type || 'text'
+        const defs = EL_DEFAULTS[type] || {}
+        const isTitle = type === 'title'
+        const el = {
+          id: id(), type,
+          content: action.content || '',
+          x: action.x ?? 120, y: action.y ?? 80,
+          width: action.width ?? (defs.width || 200),
+          height: action.height ?? (defs.height || 60),
+          fontSize: action.fontSize ?? (isTitle ? 42 : 20),
+          fontFamily: action.fontFamily || th?.[isTitle ? 'titleFont' : 'textFont'] || defs.fontFamily || 'Arial',
+          color: action.color ?? (isTitle ? (th?.titleColor || '#222') : (th?.textColor || '#333')),
+          bold: action.bold ?? isTitle,
+          textAlign: action.textAlign ?? (isTitle ? 'center' : 'left'),
+          animType: th?.animType || 'fade',
+          animDuration: th?.animDuration || 0.5,
+          opacity: action.opacity ?? 1,
+          rotation: action.rotation ?? 0,
+        }
+        if (type === 'rect') {
+          el.fill = action.fill || defs.fill || '#ffd700'
+          el.borderColor = action.borderColor || defs.borderColor || '#ffd700'
+          el.borderWidth = action.borderWidth ?? defs.borderWidth ?? 2
+          el.borderRadius = action.borderRadius ?? defs.borderRadius ?? 0
+        }
+        if (type === 'circle') {
+          el.fill = action.fill || defs.fill || '#ffd700'
+          el.borderColor = action.borderColor || defs.borderColor || '#ffd700'
+          el.borderWidth = action.borderWidth ?? defs.borderWidth ?? 2
+        }
+        if (type === 'arrow') {
+          el.fill = action.fill || defs.fill || '#ffd700'
+          el.borderWidth = action.borderWidth ?? defs.borderWidth ?? 3
+        }
+        s.elements.push(el)
+        App.sel = el.id
+        desc = describeAction(action)
+        break
+      }
+      case 'delete_element': {
+        const delId = action.id || App.sel
+        const idx = s.elements.findIndex(e => e.id === delId)
+        if (idx > -1) {
+          s.elements.splice(idx, 1)
+          App.sel = null
+          desc = describeAction(action)
+        } else {
+          desc = I18n.t('ai.error.elementNotFound')
+        }
+        break
+      }
+      case 'update_element': {
+        const updId = action.id || App.sel
+        const e = s.elements.find(x => x.id === updId)
+        if (e) {
+          Object.assign(e, action.props || {})
+          desc = describeAction(action)
+        } else {
+          desc = I18n.t('ai.error.elementNotFound')
+        }
+        break
+      }
+      case 'duplicate_element': {
+        const dupId = action.id || App.sel
+        const src = s.elements.find(x => x.id === dupId)
+        if (src) {
+          const c = clone(src)
+          c.id = id()
+          c.x += 20
+          c.y += 20
+          s.elements.push(c)
+          App.sel = c.id
+          desc = describeAction(action)
+        }
+        break
+      }
+      case 'align_element': {
+        alignEls(action.align || 'centerX')
+        App.sel = null
+        desc = describeAction(action)
+        break
+      }
+      case 'style_all_elements': {
+        const filterType = action.type
+        const props = action.props || {}
+        let count = 0
+        s.elements.forEach(el => {
+          if (!filterType || el.type === filterType) {
+            Object.assign(el, props)
+            count++
+          }
+        })
+        desc = I18n.t('ai.result.styledCount', String(count))
+        break
+      }
+      case 'add_slide': {
+        const bg = action.background || th?.canvasBg || '#ffffff'
+        App.slides.splice(App.cur + 1, 0, {
+          id: 's' + Date.now(), background: bg, elements: [],
+          transition: action.transition || 'fade', notes: ''
+        })
+        App.cur = App.cur + 1
+        App.sel = null
+        desc = describeAction(action)
+        break
+      }
+      case 'delete_slide': {
+        if (App.slides.length < 2) { desc = I18n.t('ai.error.minOneSlide'); break }
+        delSlide(App.cur)
+        desc = describeAction(action)
+        break
+      }
+      case 'duplicate_slide': {
+        dupSlide()
+        desc = describeAction(action)
+        break
+      }
+      case 'set_slide_background': {
+        s.background = action.color || '#fff'
+        desc = describeAction(action)
+        break
+      }
+      case 'set_all_backgrounds': {
+        const bg = action.color || '#fff'
+        App.slides.forEach(sl => { sl.background = bg })
+        desc = describeAction(action)
+        break
+      }
+      case 'set_slide_transition': {
+        s.transition = action.transition || 'fade'
+        desc = describeAction(action)
+        break
+      }
+      case 'clear_slide': {
+        s.elements = []
+        App.sel = null
+        desc = describeAction(action)
+        break
+      }
+      case 'batch': {
+        const acts = action.actions || []
+        for (const a of acts) {
+          save()
+          await execAction(a)
+        }
+        desc = I18n.t('ai.result.batchDone', String(acts.length))
+        break
+      }
+      case 'generate_slides': {
+        const topic = action.topic || ''
+        const cnt = action.count || 3
+        await genSlides(topic, cnt, true)
+        desc = I18n.t('ai.result.slidesCreated', String(cnt))
+        break
+      }
+      case 'set_animations': {
+        const anim = action.animType || 'fade'
+        const dur = action.animDuration ?? 0.5
+        let count = 0
+        if (action.target === 'selected' && App.sel) {
+          const el = s.elements.find(e => e.id === App.sel)
+          if (el) { el.animType = anim; el.animDuration = dur; count = 1 }
+        } else {
+          App.slides.forEach(sl => {
+            sl.elements.forEach(e => { e.animType = anim; e.animDuration = dur; count++ })
+          })
+        }
+        desc = I18n.t('ai.result.animationApplied', String(count), anim, String(dur))
+        break
+      }
+      case 'set_text_color': {
+        const color = action.color || '#333'
+        let count = 0
+        if (action.target === 'selected' && App.sel) {
+          const el = s.elements.find(e => e.id === App.sel)
+          if (el && (el.type === 'text' || el.type === 'title')) { el.color = color; count = 1 }
+        } else {
+          App.slides.forEach(sl => {
+            sl.elements.forEach(el => { if (el.type === 'text' || el.type === 'title') { el.color = color; count++ } })
+          })
+        }
+        desc = I18n.t('ai.result.textColorChanged', String(count), color)
+        break
+      }
+      case 'set_background': {
+        const bg2 = action.color || '#fff'
+        App.slides.forEach(sl => { sl.background = bg2 })
+        desc = I18n.t('ai.result.allBgsChanged', bg2)
+        break
+      }
+      default:
+        desc = I18n.t('ai.error.unknownAction', action.action)
+    }
+
+    if (action.action !== 'batch') {
+      renderSlide()
+      renderThumbs()
+      updateToolbar()
+      hidePanel()
+    }
+    return desc || I18n.t('ai.result.completed')
+  }
+
   async function send() {
     const text = input.value.trim()
     if (!text || aiBusy) return
@@ -144,229 +413,73 @@ function initAI() {
     aiBusy = true
     hideWelcome()
 
-    const status = agentMsg('search', 'Düşünülüyor...')
-    typing.classList.remove('hidden')
-    try {
-      const ctx = buildSlideContext()
-      const msgs = aiMsgs.slice(-8).map(m => ({ role: m.role, content: m.content }))
-      const actionHint = 'Kullanıcı slaytta değişiklik istiyorsa JSON döndür. JSON içinde "explain" alanına ne yaptığını açıkla. Desteklenen aksiyonlar: {"action":"add_title","content":"...","explain":"...","fontSize":42}  {"action":"add_text","content":"...","explain":"..."}  {"action":"set_animations","animType":"fade","animDuration":0.5,"target":"selected","explain":"..."}  {"action":"set_text_color","color":"#ff0000","target":"selected","explain":"..."}  {"action":"set_background","color":"#1a1a2e","explain":"..."}  Normal sorulara normal yanıt ver.'
-      msgs.unshift({ role: 'system', content: ctx ? `Şu anki sunum:\n${ctx}\n\n${actionHint}` : actionHint })
-      replaceMsg(status, 'brain', 'Analiz ediliyor...')
-      const r = await AI.chat(msgs)
-      status.remove()
+    let lastResult = ''
+    const maxTurns = 5
 
-      let action = null
-      const jsonMatch = r.match(/\{(?:[^{}]|"(?:\\.|[^"\\])*")*\}/)
-      const jsonStr = jsonMatch ? jsonMatch[0] : r.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim()
-      try { action = JSON.parse(jsonStr) } catch {}
+    for (let turn = 0; turn < maxTurns; turn++) {
+      const statusEl = agentMsg('loader', I18n.t('ai.status.thinking'))
+      typing.classList.remove('hidden')
+      try {
+        const sysMsg = buildSystemMsg(lastResult)
+        const msgs = aiMsgs.slice(-6).map(m => ({ role: m.role, content: m.content }))
+        if (turn === 0) {
+          msgs.unshift({ role: 'system', content: sysMsg })
+        } else {
+          msgs.push({ role: 'user', content: 'Başka yapman gereken bir şey var mı? Varsa JSON aksiyon döndür, yoksa sadece DONE yaz.' })
+        }
 
-      if (action?.action) {
-        const desc = await execAction(action)
-        addMsg('assistant', action.explain || desc)
-      } else {
-        const el = document.createElement('div')
-        await typewrite(el, r)
-        aiMsgs.push({ role: 'assistant', content: r })
+        typing.classList.add('hidden')
+        statusEl.remove()
+        const thinking = agentMsg('brain', I18n.t('ai.status.waiting'))
+        const r = await AI.chat(msgs)
+        thinking.remove()
+
+        let action = null
+        try {
+          const jsonMatch = r.match(/\{(?:[^{}]|"(?:\\.|[^"\\])*")*}/)
+          const jsonStr = jsonMatch ? jsonMatch[0] : r.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim()
+          action = JSON.parse(jsonStr)
+        } catch {}
+
+        if (action?.action && action.action !== 'system') {
+          const stepEl = agentStep(describeAction(action))
+          const result = await execAction(action)
+          finishStep(stepEl, result.toLowerCase().includes('bulunamadı') || result.toLowerCase().includes('kalmalı') ? 'alert-triangle' : 'check-circle')
+          const explain = action.explain || result
+          aiMsgs.push({ role: 'assistant', content: '✅ ' + explain })
+          lastResult = result
+        } else if (turn === 0) {
+          const el = document.createElement('div')
+          await typewrite(el, r)
+          aiMsgs.push({ role: 'assistant', content: r })
+          break
+        } else {
+          break
+        }
+      } catch (e) {
+        Toast.error(e, 'AI Chat')
+        break
       }
-    } catch (e) {
-      replaceMsg(status, 'alert-triangle', I18n.t('ai.error') + ': ' + e.message)
-      status.className = 'ai-msg err'
-      aiMsgs.push({ role: 'assistant', content: '⚠️ ' + I18n.t('ai.error') + ': ' + e.message })
-      Toast.error(e, 'AI Chat')
     }
-    aiBusy = false
+
     typing.classList.add('hidden')
+    aiBusy = false
   }
 
-  async function execAction(action) {
-    const s = slide()
-    if (!s) return ''
-    save()
-    const th = App.projectTheme
-    let desc = ''
-
-    switch (action.action) {
-      case 'add_title': {
-        s.elements.push({
-          id: id(), type: 'title',
-          content: action.content || 'Başlık',
-          x: action.x || 60, y: action.y || 40,
-          width: action.width || 840, height: action.height || 65,
-          fontSize: action.fontSize || 42,
-          fontFamily: th?.titleFont || 'Arial',
-          color: th?.titleColor || '#222',
-          bold: true, textAlign: 'center',
-          animType: th?.animType || 'fade',
-          animDuration: th?.animDuration || 0.5,
-        })
-        App.sel = s.elements[s.elements.length - 1].id
-        desc = `"${action.content || 'Başlık'}" başlığı eklendi`
-        break
-      }
-      case 'add_text': {
-        s.elements.push({
-          id: id(), type: 'text',
-          content: action.content || '',
-          x: action.x || 120, y: action.y || 80,
-          width: action.width || 200, height: action.height || 60,
-          fontSize: action.fontSize || 20,
-          fontFamily: th?.textFont || 'Arial',
-          color: th?.textColor || '#333',
-          bold: false, textAlign: 'left',
-          animType: th?.animType || 'fade',
-          animDuration: th?.animDuration || 0.5,
-        })
-        App.sel = s.elements[s.elements.length - 1].id
-        desc = `"${action.content || ''}" metni eklendi`
-        break
-      }
-      case 'set_animations': {
-        const anim = action.animType || 'fade'
-        const dur = action.animDuration ?? 0.5
-        let count = 0
-        if (action.target === 'selected' && App.sel) {
-          const el = s.elements.find(e => e.id === App.sel)
-          if (el) { el.animType = anim; el.animDuration = dur; count = 1 }
-        } else {
-          for (const sl of App.slides) {
-            sl.elements.forEach(e => { e.animType = anim; e.animDuration = dur })
-            count += sl.elements.length
-          }
-        }
-        desc = `${count} elemana ${anim} animasyonu (${dur}s) atandı`
-        break
-      }
-      case 'set_text_color': {
-        const color = action.color || '#333'
-        if (action.target === 'selected' && App.sel) {
-          const el = s.elements.find(e => e.id === App.sel)
-          if (el && (el.type === 'text' || el.type === 'title')) { el.color = color; desc = `Seçili elemanın rengi ${color} olarak değiştirildi` }
-          else desc = 'Seçili eleman bulunamadı'
-        } else {
-          let cnt = 0
-          for (const sl of App.slides)
-            sl.elements.forEach(el => { if (el.type === 'text' || el.type === 'title') { el.color = color; cnt++ } })
-          desc = `${cnt} metin elemanının rengi ${color} olarak değiştirildi`
-        }
-        break
-      }
-      case 'set_background': {
-        for (const slide of App.slides) slide.background = action.color || '#fff'
-        desc = `Tüm slaytların arkaplanı ${action.color || '#fff'} olarak değiştirildi`
-        break
-      }
-    }
-    renderSlide()
-    renderThumbs()
-    updateToolbar()
-    hidePanel()
-    return desc || 'İşlem tamamlandı'
-  }
-
-  async function genSlides(topic, count) {
-    if (aiBusy) return
-    const c = count || extractCount(input.value.trim()) || 3
-    const t = topic || input.value.trim() || I18n.t('ai.defaultTopic')
-    input.value = ''
-    aiBusy = true
-
-    const steps = [agentMsg('layers', 'Slaytlar oluşturuluyor...')]
-    await new Promise(r => setTimeout(r, 200))
-    replaceMsg(steps[0], 'pen-tool', 'AI çalışıyor...')
-    await new Promise(r => setTimeout(r, 200))
-
-    typing.classList.remove('hidden')
-    const loader = Toast.show('Slaytlar oluşturuluyor...', Toast.LOADING, 0)
-    try {
-      const ctx = buildSlideContext()
-      const slides = await AI.generateSlides(t, c, ctx)
-      steps[0].remove()
-      loader.dismiss()
-
-      if (slides?.length) {
-        Toast.show(slides.length + ' slayt oluşturuldu', Toast.SUCCESS, 3000)
-        const th = App.projectTheme
-        const bg = th?.canvasBg || '#ffffff'
-        const tc = th?.titleColor || '#222'
-        const tf = th?.titleFont || 'Arial'
-        const mc = th?.textColor || '#444'
-        const mf = th?.textFont || 'Arial'
-
-        const layouts = [
-          (els, title, bullets) => {
-            els.push({ id: id(), type: 'title', content: title, x: 60, y: 40, width: 840, height: 65, fontSize: 42, fontFamily: tf, color: tc, bold: true, textAlign: 'center' })
-            bullets.forEach((b, i) => els.push({ id: id(), type: 'text', content: `•  ${b}`, x: 70, y: 130 + i * 38, width: 820, height: 34, fontSize: 20, fontFamily: mf, color: mc, textAlign: 'left' }))
-          },
-          (els, title, bullets) => {
-            els.push({ id: id(), type: 'title', content: title, x: 50, y: 60, width: 320, height: 80, fontSize: 36, fontFamily: tf, color: tc, bold: true, textAlign: 'right' })
-            bullets.forEach((b, i) => els.push({ id: id(), type: 'text', content: `•  ${b}`, x: 420, y: 60 + i * 36, width: 500, height: 32, fontSize: 19, fontFamily: mf, color: mc, textAlign: 'left' }))
-          },
-          (els, title, bullets) => {
-            els.push({ id: id(), type: 'title', content: title, x: 60, y: 25, width: 840, height: 45, fontSize: 30, fontFamily: tf, color: tc, bold: true, textAlign: 'center' })
-            const half = Math.ceil(bullets.length / 2)
-            bullets.forEach((b, i) => {
-              const col = i < half ? 0 : 1
-              const idx = i < half ? i : i - half
-              els.push({ id: id(), type: 'text', content: `•  ${b}`, x: 60 + col * 430, y: 90 + idx * 36, width: 410, height: 32, fontSize: 18, fontFamily: mf, color: mc, textAlign: 'left' })
-            })
-          },
-          (els, title, bullets) => {
-            els.push({ id: id(), type: 'title', content: title, x: 60, y: 50, width: 840, height: 80, fontSize: 48, fontFamily: tf, color: tc, bold: true, textAlign: 'center' })
-            bullets.forEach((b, i) => els.push({ id: id(), type: 'text', content: `•  ${b}`, x: 80, y: 160 + i * 50, width: 800, height: 40, fontSize: 22, fontFamily: mf, color: mc, textAlign: 'left' }))
-          },
-          (els, title, bullets) => {
-            els.push({ id: id(), type: 'title', content: title, x: 60, y: 25, width: 500, height: 40, fontSize: 26, fontFamily: tf, color: tc, bold: true, textAlign: 'left' })
-            bullets.forEach((b, i) => els.push({ id: id(), type: 'text', content: `•  ${b}`, x: 60, y: 80 + i * 34, width: 840, height: 30, fontSize: 19, fontFamily: mf, color: mc, textAlign: 'left' }))
-          },
-        ]
-
-        slides.forEach((s, idx) => {
-          save()
-          const els = []
-          const bullets = Array.isArray(s.bullets) ? s.bullets : []
-          const layout = layouts[idx % layouts.length]
-          layout(els, s.title || '', bullets)
-          if (th) {
-            els.forEach(el => {
-              el.animType = th.animType || 'fade'
-              el.animDuration = th.animDuration || 0.5
-            })
-          }
-          App.slides.push({ id: id(), background: bg, elements: els })
-        })
-        App.cur = App.slides.length - slides.length
-        App.sel = null
-        renderAll()
-        renderThumbs()
-        const ok = agentMsg('check-circle', `${slides.length} slayt oluşturuldu`)
-        await new Promise(r => setTimeout(r, 1500))
-        ok.remove()
-      } else {
-        const w = agentMsg('alert-triangle', 'Slayt oluşturulamadı')
-        await new Promise(r => setTimeout(r, 2000))
-        w.remove()
-      }
-    } catch (e) {
-      steps[0]?.remove()
-      loader.dismiss()
-      Toast.error(e, 'Slide Generation')
-      const w = agentMsg('alert-triangle', I18n.t('ai.error'))
-      await new Promise(r => setTimeout(r, 2000))
-      w.remove()
-    }
-    aiBusy = false
-    typing.classList.add('hidden')
+  function showWelcome() {
+    const w = msgsEl.querySelector('.ai-welcome')
+    if (w) w.style.display = ''
   }
 
   async function smartAction(action) {
     const el = selEl()
     if (!el || !el.content) return
     const meta = {
-      improve: { icon: 'sparkles', label: 'Düzeltiliyor...', prompt: I18n.t('ai.improvePrompt') },
-      summarize: { icon: 'align-left', label: 'Özetleniyor...', prompt: I18n.t('ai.summarizePrompt') },
-      'translate-en': { icon: 'languages', label: 'Çevriliyor...', prompt: I18n.t('ai.translateEnPrompt') },
+      improve: { icon: 'sparkles', label: I18n.t('ai.status.improving'), prompt: I18n.t('ai.improvePrompt') },
+      summarize: { icon: 'align-left', label: I18n.t('ai.status.summarizing'), prompt: I18n.t('ai.summarizePrompt') },
+      'translate-en': { icon: 'languages', label: I18n.t('ai.status.translating'), prompt: I18n.t('ai.translateEnPrompt') },
     }
-    const m = meta[action] || { icon: 'refresh-cw', label: 'İşleniyor...', prompt: action }
+    const m = meta[action] || { icon: 'refresh-cw', label: I18n.t('ai.status.processing'), prompt: action }
     aiBusy = true
     hideWelcome()
 
@@ -375,7 +488,7 @@ function initAI() {
     typing.classList.remove('hidden')
     try {
       const ctx = buildSlideContext()
-      replaceMsg(status, 'brain', 'İçerik analiz ediliyor...')
+      replaceMsg(status, 'brain', I18n.t('ai.status.analyzing'))
       const r = await AI.improveTextWithContext(el.content, m.prompt, ctx)
       status.remove()
       if (r) {
@@ -434,5 +547,5 @@ function initAI() {
   })
 }
 
-window.renderMD = renderMD;
-window.initAI = initAI;
+window.renderMD = renderMD
+window.initAI = initAI

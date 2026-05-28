@@ -25,9 +25,9 @@
         <a class="nav-item" data-section="favorites"><i data-lucide="star"></i> <span data-i18n="home.favorites">Favoriler</span></a>
       </nav>
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">ŞABLONLAR</div>
+      <div class="sidebar-section-label" data-i18n="home.templates">ŞABLONLAR</div>
       <nav class="sidebar-nav">
-        <a class="nav-item" data-section="templates"><i data-lucide="layout-template"></i> <span>Şablon Galerisi</span></a>
+        <a class="nav-item" data-section="templates"><i data-lucide="layout-template"></i> <span data-i18n="home.templateGallery">Şablon Galerisi</span></a>
       </nav>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-label" data-i18n="home.themes">TEMALAR</div>
@@ -71,17 +71,17 @@
 
         <section id="section-templates" class="home-section hidden">
           <div class="section-head">
-            <h2>Şablon Galerisi</h2>
-            <p class="section-desc">
+            <h2 data-i18n="home.templateGallery">Şablon Galerisi</h2>
+            <p class="section-desc" data-i18n="home.templateGalleryDesc">
               Bir şablon seç, proje olarak açılır — istediğin gibi düzenle.
             </p>
           </div>
 
           <div class="template-filter">
-            <button class="tf-btn active" data-cat="all">Tümü</button>
-            <button class="tf-btn" data-cat="temel">Temel</button>
-            <button class="tf-btn" data-cat="düzen">Düzen</button>
-            <button class="tf-btn" data-cat="içerik">İçerik</button>
+            <button class="tf-btn active" data-cat="all" data-i18n="template.filter.all">Tümü</button>
+            <button class="tf-btn" data-cat="temel" data-i18n="template.filter.basic">Temel</button>
+            <button class="tf-btn" data-cat="düzen" data-i18n="template.filter.layout">Düzen</button>
+            <button class="tf-btn" data-cat="içerik" data-i18n="template.filter.content">İçerik</button>
           </div>
 
           <div id="template-gallery" class="template-gallery-grid">
@@ -395,7 +395,7 @@
               <div class="about-version">v0.2.1</div>
               <div class="about-desc" data-i18n="about.desc">Electron tabanlı modern sunum uygulaması</div>
               <div class="about-links">
-                <a href="#" id="about-github" class="about-link"><i data-lucide="github"></i> GitHub</a>
+                <a href="#" id="about-github" class="about-link"><i data-lucide="github"></i> <span data-i18n="about.github">GitHub</span></a>
               </div>
               <div class="about-tech">
                 <span>Electron</span><span>Node.js</span><span>Lucide</span>

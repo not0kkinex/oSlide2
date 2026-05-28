@@ -1620,6 +1620,26 @@ input:checked + .toggle-track .toggle-thumb { left: 18px; background:var(--accen
 #ai-drawer .ai-send-btn:hover { background: var(--accent2); }
 #ai-drawer .ai-send-btn svg { width: 15px; height: 15px; }
 
+/* AI Step UI */
+.ai-step {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 10px; margin: 1px 0;
+  border-radius: 6px; font-size: 11px;
+  background: var(--bg-elevated);
+  border: 0.5px solid transparent;
+  align-self: flex-start; width: 100%;
+  transition: all 0.2s;
+}
+.ai-step .ai-step-icon { width: 14px; height: 14px; flex-shrink: 0; }
+.ai-step.running { color: var(--accent); border-color: var(--accent); }
+.ai-step.done { color: #4caf50; border-color: rgba(76,175,80,0.3); }
+.ai-step.error { color: #f44336; border-color: rgba(244,67,54,0.3); }
+.ai-step-spin { animation: aiSpin 1s linear infinite; }
+@keyframes aiSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* AI toggle button glow */
 #ai-toggle-btn.active { color: var(--accent); }
 #ai-toggle-btn.active svg { filter: drop-shadow(0 0 6px rgba(255,215,0,0.5)); }

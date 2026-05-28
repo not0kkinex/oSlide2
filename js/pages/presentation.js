@@ -1,8 +1,11 @@
 (function() {
   let slides = [], cur = 0, timer = null, sec = 0, transDir = 'next'
 
-  const _noData = 'Veri yok'
-  const _hint = 'Ok tuşları ile gezin • ESC çıkış'
+  let _noData, _hint
+  function initStrings() {
+    _noData = I18n.t('presentation.noData')
+    _hint = I18n.t('presentation.hint')
+  }
 
   const themes = {
     default: { bg: '#fff', text: '#222', accent: '#ffd700' },
@@ -36,9 +39,9 @@
 
   function setAnnotMode(mode) {
     annotMode = mode
-    const names = { pen: 'Kalem', highlighter: 'Fosforlu', eraser: 'Silgi', laser: 'Lazer' }
+    const names = { pen: I18n.t('annot.pen'), highlighter: I18n.t('annot.highlighter'), eraser: I18n.t('annot.eraser'), laser: I18n.t('annot.laser') }
     const color = mode === 'highlighter' ? '' : ` ${annotColors[annotIdx]}`
-    showAnnotHint(`${names[mode] || 'Kalem'}${color}`)
+    showAnnotHint(`${names[mode] || I18n.t('annot.pen')}${color}`)
   }
 
   function showAnnotHint(text) {
@@ -55,7 +58,7 @@
     annotCanvas.classList.toggle('active', annotActive)
     if (annotActive) {
       annotCanvas.style.pointerEvents = 'auto'
-      showAnnotHint(`Çizim aktif — ${annotMode}`)
+      showAnnotHint(I18n.t('annot.active', annotMode))
       document.body.style.cursor = 'crosshair'
     } else {
       annotCanvas.style.pointerEvents = 'none'
@@ -67,7 +70,7 @@
   function clearAnnot() {
     if (!annotCtx) return
     annotCtx.clearRect(0, 0, annotCanvas.width, annotCanvas.height)
-    showAnnotHint('Temizlendi')
+    showAnnotHint(I18n.t('annot.cleared'))
   }
 
   function onAnnotDown(e) {
@@ -134,13 +137,14 @@
   }
 
   function init() {
+    initStrings()
     initAnnotation()
     const w = document.getElementById('pres-wrapper');
     if (!w) return;
     if (window.electronAPI?.onPresentationData) { window.electronAPI.onPresentationData(d => load(d)); return; }
     const stored = localStorage.getItem('presentationData');
-    if (stored) { try { load(JSON.parse(stored)); } catch { w.innerHTML = '<div style="color:#fff;text-align:center;padding:40px">' + _noData + '</div>'; } }
-    else { w.innerHTML = '<div style="color:#fff;text-align:center;padding:40px">' + _noData + '</div>'; }
+    if (stored) { try { load(JSON.parse(stored)); } catch { w.innerHTML = '<div style="color:#fff;text-align:center;padding:40px">' + I18n.t('presentation.noData') + '</div>'; } }
+    else { w.innerHTML = '<div style="color:#fff;text-align:center;padding:40px">' + I18n.t('presentation.noData') + '</div>'; }
   }
 
   function load(data) {

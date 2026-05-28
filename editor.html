@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: file: https:; img-src 'self' data: file: https:;">
-  <title>oSlide2 - Editör</title>
+  <title data-i18n="editor.pageTitle">oSlide2 - Editör</title>
   <link rel="stylesheet" href="node_modules/@fontsource/inter/latin.css">
   <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-ext.css">
   <link rel="stylesheet" href="node_modules/@fontsource/inter/latin-italic.css">
@@ -72,10 +72,10 @@
       <div class="topbar-right">
         <button class="tb-btn" id="editor-theme-btn" data-i18n-attr="title:toolbar.theme"><i data-lucide="palette"></i></button>
         <button class="tb-btn" id="editor-settings-btn" data-i18n-attr="title:toolbar.settings"><i data-lucide="settings"></i></button>
-        <button class="tb-btn" id="ai-toggle-btn" title="AI" style="display:none"><i data-lucide="bot"></i></button>
+        <button class="tb-btn" id="ai-toggle-btn" data-i18n-attr="title:ai.title" style="display:none"><i data-lucide="bot"></i></button>
         <div class="sep-v"></div>
         <button class="tb-btn accent" data-action="start-presentation" data-i18n-attr="title:toolbar.presentation">
-          <i data-lucide="play"></i> <span>Sunum</span>
+          <i data-lucide="play"></i> <span data-i18n="toolbar.presentation">Sunum</span>
         </button>
       </div>
     </header>
@@ -87,9 +87,9 @@
             <span data-i18n="editor.slides">Slaytlar</span>
             <div class="sidebar-actions">
             <button id="add-slide-btn" data-i18n-attr="title:editor.newSlide"><i data-lucide="plus"></i></button>
-            <button id="template-btn" title="Şablondan Ekle"><i data-lucide="layout-template"></i></button>
+            <button id="template-btn" data-i18n-attr="title:editor.addFromTemplate"><i data-lucide="layout-template"></i></button>
             <button id="dup-slide-btn" data-i18n-attr="title:editor.dupSlide"><i data-lucide="copy"></i></button>
-            <button id="save-as-template-btn" title="Şablon Olarak Kaydet" style="margin-left:auto"><i data-lucide="save"></i></button>
+            <button id="save-as-template-btn" data-i18n-attr="title:editor.saveAsTemplate" style="margin-left:auto"><i data-lucide="save"></i></button>
             </div>
           </div>
           <div id="slide-list"></div>
@@ -109,7 +109,7 @@
             <span class="zb-value" id="zoom-value">%100</span>
             <button class="zb-btn" id="zoom-in">+</button>
           </div>
-          <button class="ai-fab" id="ai-fab-btn" title="AI Asistanı" onclick="document.getElementById('ai-toggle-btn').click()">
+          <button class="ai-fab" id="ai-fab-btn" data-i18n-attr="title:ai.title" onclick="document.getElementById('ai-toggle-btn').click()">
             <i data-lucide="bot"></i>
           </button>
         </main>
@@ -120,9 +120,9 @@
             <button id="panel-close"><i data-lucide="x"></i></button>
           </div>
           <div class="panel-tabs">
-            <button class="panel-tab active" data-tab="element">Öğe</button>
-            <button class="panel-tab" data-tab="slide">Slayt</button>
-            <button class="panel-tab" data-tab="animation">Animasyon</button>
+            <button class="panel-tab active" data-tab="element" data-i18n="panel.element">Öğe</button>
+            <button class="panel-tab" data-tab="slide" data-i18n="panel.slide">Slayt</button>
+            <button class="panel-tab" data-tab="animation" data-i18n="panel.animation">Animasyon</button>
           </div>
           <div id="panel-body">
             <div class="pp-group">
@@ -142,14 +142,14 @@
       <div id="notes-bar">
         <div id="notes-bar-head">
           <i data-lucide="file-text"></i>
-          <span>Konuşmacı Notları</span>
+          <span data-i18n="editor.notes">Konuşmacı Notları</span>
           <span id="notes-status"></span>
-          <button id="notes-toggle" title="Gizle/Göster">
+          <button id="notes-toggle" data-i18n-attr="title:editor.toggleNotes">
             <i data-lucide="chevron-down"></i>
           </button>
         </div>
         <textarea id="notes-input"
-          placeholder="Bu slayt için notlarınızı buraya yazın..."
+          data-i18n-attr="placeholder:editor.notesPlaceholder"
           rows="3"></textarea>
       </div>
     </div>
@@ -175,8 +175,8 @@
         </div>
         <div class="ai-h-actions">
           <button class="ai-chip" data-ai-slide><i data-lucide="layers"></i> <span data-i18n="ai.generateSlide">Slayt Üret</span></button>
-          <button class="ai-close-btn" id="ai-fullscreen-btn" title="Tam Ekran"><i data-lucide="maximize"></i></button>
-          <button class="ai-close-btn" id="ai-close-btn" title="Kapat"><i data-lucide="x"></i></button>
+          <button class="ai-close-btn" id="ai-fullscreen-btn" data-i18n-attr="title:ai.fullscreen"><i data-lucide="maximize"></i></button>
+          <button class="ai-close-btn" id="ai-close-btn" data-i18n-attr="title:ai.close"><i data-lucide="x"></i></button>
         </div>
       </div>
       <div class="ai-body">
@@ -190,7 +190,7 @@
           <button class="ai-chip" data-ai-action="translate-en"><i data-lucide="languages"></i> EN</button>
         </div>
         <div class="ai-input-row">
-          <textarea id="ai-input" rows="1" placeholder="AI'ya bir şey sor..."></textarea>
+          <textarea id="ai-input" rows="1" data-i18n-attr="placeholder:ai.placeholder"></textarea>
           <button id="ai-send" class="ai-send-btn"><i data-lucide="send"></i></button>
         </div>
       </div>
@@ -212,7 +212,7 @@
       <div class="settings-body">
         <div class="settings-tab-content active" id="tab-general">
           <div class="sp-section">
-            <span class="sp-section-label">Görünüm</span>
+            <span class="sp-section-label" data-i18n="settings.appearance">Görünüm</span>
             <div class="sg">
               <label class="sg-label" data-i18n="settings.theme">Tema</label>
               <div class="theme-cards">
@@ -238,7 +238,7 @@
             </div>
           </div>
           <div class="sp-section">
-            <span class="sp-section-label">Kaydetme</span>
+            <span class="sp-section-label" data-i18n="settings.saving">Kaydetme</span>
             <div class="sg">
               <div class="sg-row">
                 <span class="sg-label" data-i18n="settings.autoSave">Otomatik Kaydet</span>
@@ -256,7 +256,7 @@
             </div>
           </div>
           <div class="sp-section">
-            <span class="sp-section-label">Projeler</span>
+            <span class="sp-section-label" data-i18n="settings.projects">Projeler</span>
             <div class="sg">
               <div class="sg-row">
                 <span class="sg-label" data-i18n="settings.defaultTemplate">Varsayılan Şablon</span>
@@ -273,7 +273,7 @@
         </div>
         <div class="settings-tab-content" id="tab-editor">
           <div class="sp-section">
-            <span class="sp-section-label">Izgara &amp; Yapışma</span>
+            <span class="sp-section-label" data-i18n="settings.gridAndSnap">Izgara & Yapışma</span>
             <div class="sg">
               <div class="sg-row">
                 <span class="sg-label" data-i18n="settings.snapToGrid">Izgaraya Yapış</span>
@@ -291,7 +291,7 @@
             </div>
           </div>
           <div class="sp-section">
-            <span class="sp-section-label">Yazı Tipi Varsayılanları</span>
+            <span class="sp-section-label" data-i18n="settings.fontDefaults">Yazı Tipi Varsayılanları</span>
             <div class="sg">
               <div class="sg-row">
                 <span class="sg-label" data-i18n="settings.defaultFont">Varsayılan Yazı Tipi</span>
@@ -306,7 +306,7 @@
             </div>
           </div>
           <div class="sp-section">
-            <span class="sp-section-label">Tuval</span>
+            <span class="sp-section-label" data-i18n="settings.canvas">Tuval</span>
             <div class="sg">
               <div class="sg-row">
                 <span class="sg-label" data-i18n="settings.canvasBg">Canvas Arkaplan Rengi</span>
@@ -332,7 +332,7 @@
         </div>
         <div class="settings-tab-content" id="tab-shortcuts">
           <div class="sp-section">
-            <span class="sp-section-label">Klavye kısayolları</span>
+            <span class="sp-section-label" data-i18n="settings.keyboardShortcuts">Klavye kısayolları</span>
             <div class="shortcuts-list">
               <div class="sc-item"><span class="sc-desc" data-i18n="shortcuts.undo">Geri Al</span><span class="sc-key">Ctrl+Z</span></div>
               <div class="sc-item"><span class="sc-desc" data-i18n="shortcuts.redo">İleri Al</span><span class="sc-key">Ctrl+Y</span></div>
@@ -383,7 +383,7 @@
   <div id="template-overlay" class="hidden">
     <div id="template-modal">
       <div id="template-modal-head">
-        <span>Şablon Seç</span>
+        <span data-i18n="template.select">Şablon Seç</span>
         <button id="template-close">
           <i data-lucide="x"></i>
         </button>
@@ -396,34 +396,34 @@
   <div id="save-template-overlay" class="hidden">
     <div id="save-template-modal">
       <div id="save-template-head">
-        <span>Şablon Olarak Kaydet</span>
+        <span data-i18n="editor.saveAsTemplate">Şablon Olarak Kaydet</span>
         <button id="save-template-close"><i data-lucide="x"></i></button>
       </div>
       <div id="save-template-body">
         <div class="form-group">
-          <label>Şablon Adı</label>
-          <input type="text" id="st-name" placeholder="Örn: Haftalık Rapor" />
+          <label data-i18n="template.nameLabel">Şablon Adı</label>
+          <input type="text" id="st-name" data-i18n-attr="placeholder:template.namePlaceholder" />
         </div>
         <div class="form-group">
-          <label>Açıklama</label>
-          <input type="text" id="st-desc" placeholder="Kısa açıklama" />
+          <label data-i18n="template.descLabel">Açıklama</label>
+          <input type="text" id="st-desc" data-i18n-attr="placeholder:template.descPlaceholder" />
         </div>
         <div class="form-group">
-          <label>Kategori</label>
+          <label data-i18n="template.categoryLabel">Kategori</label>
           <select id="st-category">
-            <option value="temel">Temel</option>
-            <option value="düzen">Düzen</option>
-            <option value="içerik">İçerik</option>
+            <option value="temel" data-i18n="template.category.basic">Temel</option>
+            <option value="düzen" data-i18n="template.category.layout">Düzen</option>
+            <option value="içerik" data-i18n="template.category.content">İçerik</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Etiketler (virgülle ayır)</label>
-          <input type="text" id="st-tags" placeholder="ör: rapor, haftalık, iş" />
+          <label data-i18n="template.tagsLabel">Etiketler (virgülle ayır)</label>
+          <input type="text" id="st-tags" data-i18n-attr="placeholder:template.tagsPlaceholder" />
         </div>
       </div>
       <div class="dialog-foot">
-        <button id="save-template-cancel" class="btn-secondary">İptal</button>
-        <button id="save-template-confirm" class="btn-primary">Kaydet</button>
+        <button id="save-template-cancel" class="btn-secondary" data-i18n="dialog.cancel">İptal</button>
+        <button id="save-template-confirm" class="btn-primary" data-i18n="settings.save">Kaydet</button>
       </div>
     </div>
   </div>

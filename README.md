@@ -147,6 +147,17 @@ Output: `dist/win-unpacked/oSlide2.exe` — Portable app (package with your own 
 
 All shortcuts are customizable in Settings > Shortcuts.
 
+## Contributors
+
+<p align="center">
+  <a href="https://github.com/not0kkinex">
+    <img src="https://github.com/not0kkinex.png" width="64" height="64" alt="not0kkinex" style="border-radius:50%" />
+  </a>
+  <a href="https://github.com/kyrtstn">
+    <img src="https://github.com/kyrtstn.png" width="64" height="64" alt="kyrtstn" style="border-radius:50%" />
+  </a>
+</p>
+
 ## TODO
 
 - [x] Slide templates & layouts

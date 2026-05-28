@@ -527,14 +527,14 @@
         <div class="tpl-preview" style="background:${t.color || '#2a2a2a'}">
           <i data-lucide="${t.icon || 'file-text'}"></i>
           <div class="tpl-preview-label">${esc(t.label)}</div>
-          ${isUser ? '<span class="tpl-user-badge">Kullanıcı</span>' : ''}
+          ${isUser ? '<span class="tpl-user-badge">' + I18n.t('template.userBadge') + '</span>' : ''}
         </div>
         <div class="tpl-info">
-          <div class="tpl-name">${esc(t.label)}</div>
-          <div class="tpl-desc">${esc(t.description || '')}</div>
-          <div class="tpl-meta">${slideCount} slayt</div>
+          <div class="tpl-name">${esc(isUser ? t.label : I18n.t('template.' + t.id + '.label') || t.label)}</div>
+          <div class="tpl-desc">${esc(isUser ? (t.description || '') : I18n.t('template.' + t.id + '.desc') || t.description || '')}</div>
+          <div class="tpl-meta">${I18n.t('template.slideCount', String(slideCount))}</div>
         </div>
-        <button class="tpl-use-btn" onclick="window.useTemplate('${t.id}')">Kullan</button>
+        <button class="tpl-use-btn" onclick="window.useTemplate('${t.id}')">${I18n.t('template.use')}</button>
       </div>`
     }).join('')
     if (window.lucide) lucide.createIcons()
@@ -550,7 +550,7 @@
     const all = await getAllTemplates()
     const tpl = all.find(t => t.id === templateId)
     if (!tpl) return
-    const projectName = tpl.label + ' — ' + new Date().toLocaleDateString('tr')
+    const projectName = tpl.label + ' — ' + new Date().toLocaleDateString(I18n.locale)
 
     // Multi-slide user template or single-slide built-in
     const isMultiSlide = tpl.elements && Array.isArray(tpl.elements) && tpl.elements[0]?.background !== undefined
