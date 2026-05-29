@@ -1,3 +1,5 @@
+![Star Check](https://www.fakestarchecker.com/api/badge/not0kkinex/oSlide2.svg)
+
 <p align="center">
   <img src="assets/icon.png" alt="oSlide2" width="128" />
 </p>
@@ -152,6 +154,18 @@ All shortcuts are customizable in Settings > Shortcuts.
 <a href="https://github.com/not0kkinex/oSlide2/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=not0kkinex/oSlide2" />
 </a>
+
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=not0kkinex%2FoSlide2&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=not0kkinex/oSlide2&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=not0kkinex/oSlide2&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=not0kkinex/oSlide2&type=date&legend=top-left" />
+ </picture>
+</a>
+
 
 ## TODO
 
