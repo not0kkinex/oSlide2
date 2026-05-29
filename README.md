@@ -1,7 +1,7 @@
 ![Star Check](https://www.fakestarchecker.com/api/badge/not0kkinex/oSlide2.svg)
 
 <p align="center">
-  <img src="assets/icon.png" alt="oSlide2" width="128" />
+  <img src="assets/icon-hq.png" alt="oSlide2" width="128" />
 </p>
 
 <h1 align="center">oSlide2</h1>
