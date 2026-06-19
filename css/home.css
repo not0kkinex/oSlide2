@@ -1,22 +1,24 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg-primary: #0d0d0d;
-  --bg-secondary: #161616;
-  --bg-tertiary: #1a1a1a;
-  --surface: #1f1f1f;
-  --surface2: #282828;
-  --surface3: #333;
-  --border: #2a2a2a;
-  --text-primary: #e8e8e8;
-  --text-muted: #777;
-  --text-dim: #555;
-  --accent: #ffd700;
-  --accent2: #ffed4a;
-  --danger: #ff4757;
+  --bg-primary: #09090b;
+  --bg-secondary: #121214;
+  --bg-tertiary: #18181b;
+  --surface: #27272a;
+  --surface2: #3f3f46;
+  --surface3: #52525b;
+  --border: #27272a;
+  --text-primary: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  --accent: #f59e0b; /* Amber 500 */
+  --accent2: #fbbf24; /* Amber 400 */
+  --accent-fg: #000000;
+  --danger: #ef4444;
   --radius: 8px;
   --radius-lg: 12px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 html, body {
@@ -94,19 +96,21 @@ html, body {
   color: var(--text-muted);
   cursor: pointer;
   font-size: 13px;
-  font-weight: 450;
-  transition: all 0.12s ease;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
 }
 
 .nav-item:hover {
-  background: var(--surface);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
+  transform: translateX(2px);
 }
 
 .nav-item.active {
   background: var(--surface);
-  color: var(--text-primary);
+  color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 
 .nav-item svg {
@@ -114,6 +118,7 @@ html, body {
   height: 16px;
   flex-shrink: 0;
   stroke-width: 1.8;
+  transition: color 0.2s ease;
 }
 
 .sidebar-divider {
@@ -151,7 +156,10 @@ html, body {
   gap: 12px;
   height: 52px;
   padding: 0 24px;
-  border-bottom: 0.5px solid #222;
+  background: rgba(18, 18, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   -webkit-app-region: drag;
 }
@@ -257,18 +265,20 @@ html, body {
 }
 
 .project-card {
-  background: var(--bg-tertiary);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  transition: border-color 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   animation: cardIn 0.25s ease backwards;
 }
 
 .project-card:hover {
-  border-color: #3a3a3a;
+  border-color: var(--surface2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .card-thumb-area {
@@ -309,22 +319,24 @@ html, body {
 
 /* New project card */
 .new-project-card {
-  background: var(--bg-tertiary);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
+  background: var(--bg-primary);
+  border: 1px dashed var(--surface2);
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 160px;
   gap: 8px;
 }
 
 .new-project-card:hover {
   border-color: var(--accent);
-  background: var(--surface);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
 }
 
 .new-project-card .plus {
@@ -571,42 +583,49 @@ html, body {
 
 /* ========== BUTTONS ========== */
 .btn-primary {
-  background: var(--accent);
-  color: #111;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  color: var(--accent-fg);
   border: none;
   padding: 9px 18px;
   border-radius: var(--radius);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   gap: 6px;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
 }
 
 .btn-primary:hover {
-  background: var(--accent2);
-  box-shadow: 0 2px 12px rgba(255,215,0,0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--bg-secondary);
   color: var(--text-primary);
-  border: 0.5px solid var(--border);
+  border: 1px solid var(--border);
   padding: 9px 18px;
   border-radius: var(--radius);
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
 .btn-secondary:hover {
-  border-color: var(--text-muted);
+  background: var(--surface);
+  border-color: var(--surface2);
 }
 
 .btn-primary svg, .btn-secondary svg {
@@ -614,30 +633,32 @@ html, body {
   height: 15px;
 }
 
-.btn-primary svg { stroke: #111; }
+.btn-primary svg { stroke: var(--accent-fg); }
 
 /* ========== DIALOG ========== */
 #dialog-overlay, #rename-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
-  animation: fadeIn 0.12s ease;
+  animation: fadeIn 0.2s ease;
 }
 
 #dialog-overlay.hidden, #rename-overlay.hidden { display: none; }
 
 #dialog, #rename-dialog {
   background: var(--bg-secondary);
-  border: 0.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   width: 400px;
   max-width: 90vw;
   box-shadow: var(--shadow);
-  animation: scaleIn 0.15s ease;
+  animation: scaleIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dialog-head {
@@ -723,14 +744,16 @@ html, body {
 /* ========== CONTEXT MENU ========== */
 #ctx-menu {
   position: fixed;
-  background: var(--bg-secondary);
-  border: 0.5px solid var(--border);
+  background: rgba(24, 24, 27, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow);
   z-index: 200;
   min-width: 160px;
   overflow: hidden;
-  animation: scaleIn 0.1s ease;
+  animation: scaleIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #ctx-menu.hidden { display: none; }

@@ -5,22 +5,23 @@
 }
 
 :root {
-  --bg-app: #111;
-  --bg-surface: #161616;
-  --bg-elevated: #1a1a1a;
-  --bg-input: #1a1a1a;
-  --border-subtle: #222;
-  --border-default: #2a2a2a;
-  --text-primary: #e8e8e8;
-  --text-muted: #888;
-  --text-hint: #555;
-  --accent: #FFD700;
-  --accent-fg: #111;
-  --accent2: #ffed4a;
-  --danger: #ff4757;
-  --radius-sm: 5px;
-  --radius-md: 8px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --bg-app: #09090b; /* Zinc 950 */
+  --bg-surface: #121214;
+  --bg-elevated: #18181b; /* Zinc 900 */
+  --bg-input: #18181b;
+  --border-subtle: #27272a; /* Zinc 800 */
+  --border-default: #3f3f46; /* Zinc 700 */
+  --text-primary: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-hint: #71717a;
+  --accent: #f59e0b; /* Amber 500 */
+  --accent-fg: #000000;
+  --accent2: #fbbf24; /* Amber 400 */
+  --danger: #ef4444;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 html, body {
@@ -42,10 +43,12 @@ html, body {
 #topbar {
   display: flex;
   align-items: center;
-  height: 44px;
-  padding: 0 8px;
-  background: var(--bg-surface);
-  border-bottom: 0.5px solid var(--border-subtle);
+  height: 48px;
+  padding: 0 12px;
+  background: rgba(18, 18, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
   -webkit-app-region: drag;
   flex-shrink: 0;
   gap: 0;
@@ -122,25 +125,26 @@ html, body {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  width: 28px;
-  height: 26px;
+  width: 32px;
+  height: 30px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 13px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-app-region: no-drag;
 }
 
 .tb-btn:hover {
   background: var(--bg-elevated);
   color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .tb-btn:active {
-  transform: scale(0.93);
+  transform: translateY(0) scale(0.95);
 }
 
 .tb-btn.active {
@@ -161,19 +165,21 @@ html, body {
 }
 
 .tb-btn.accent {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
   color: var(--accent-fg);
   width: auto;
-  padding: 0 12px;
-  gap: 5px;
-  height: 28px;
+  padding: 0 14px;
+  gap: 6px;
+  height: 30px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .tb-btn.accent:hover {
-  background: var(--accent2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
 .tb-btn.accent svg {
@@ -223,10 +229,12 @@ html, body {
 
 /* ========== SIDEBAR ========== */
 #sidebar {
-  width: 160px;
-  min-width: 160px;
-  background: var(--bg-surface);
-  border-right: 0.5px solid var(--border-subtle);
+  width: 180px;
+  min-width: 180px;
+  background: rgba(18, 18, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -292,18 +300,20 @@ html, body {
 .slide-thumb {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border: 1.5px solid transparent;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   background: var(--bg-elevated);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide-thumb:hover {
-  border-color: var(--border-default);
+  border-color: var(--text-hint);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .slide-thumb.active {
@@ -618,10 +628,12 @@ html, body {
 
 /* ========== PROPERTIES PANEL ========== */
 #panel {
-  width: 220px;
-  min-width: 220px;
-  background: var(--bg-surface);
-  border-left: 0.5px solid var(--border-subtle);
+  width: 240px;
+  min-width: 240px;
+  background: rgba(18, 18, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   overflow: hidden;
