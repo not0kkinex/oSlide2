@@ -1706,10 +1706,123 @@ input:checked + .toggle-track .toggle-thumb { left: 18px; background:var(--accen
   outline: none;
   font-family: inherit;
 }
+.chart-row input {
+  width: auto;
+}
 .chart-dialog-body input:focus,
 .chart-dialog-body select:focus {
   border-color: var(--accent);
 }
+
+/* Chart data rows */
+.chart-rows-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 6px 0;
+  border-bottom: 0.5px solid var(--border-subtle);
+  margin-bottom: 6px;
+}
+.chart-rows-header label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-hint);
+  margin: 0;
+  display: block;
+}
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.chart-row input[type="text"].chart-row-label {
+  flex: 2;
+  min-width: 0;
+  padding: 6px 8px;
+  background: var(--bg-input);
+  border: 0.5px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  width: auto;
+}
+.chart-row input[type="number"].chart-row-value {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  background: var(--bg-input);
+  border: 0.5px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  width: auto;
+}
+.chart-row input[type="text"].chart-row-label:focus,
+.chart-row input[type="number"].chart-row-value:focus {
+  border-color: var(--accent);
+}
+.chart-row-color {
+  width: 36px;
+  height: 32px;
+  border: 0.5px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  padding: 2px;
+  flex-shrink: 0;
+}
+.chart-row-color::-webkit-color-swatch-wrapper { padding: 0; border-radius: 4px; }
+.chart-row-color::-webkit-color-swatch { border: none; border-radius: 4px; }
+.chart-row-delete {
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: 0.5px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-hint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.chart-row-delete:hover {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.3);
+  color: #ef4444;
+}
+.chart-row-delete svg { width: 14px; height: 14px; }
+#add-chart-row-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 12px;
+  background: none;
+  border: 0.5px dashed var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+#add-chart-row-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#add-chart-row-btn svg { width: 14px; height: 14px; }
 
 /* ========== SAVE TEMPLATE MODAL ========== */
 #save-template-overlay {
