@@ -39,7 +39,7 @@ const Toast = {
     if (window.lucide) lucide.createIcons()
 
     const dismiss = () => {
-      toast.style.opacity = '0'
+      toast.classList.add('removing')
       setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast) }, 300)
     }
 
