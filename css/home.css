@@ -21,6 +21,25 @@
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+[data-active-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --surface: #e2e8f0;
+  --surface2: #cbd5e1;
+  --surface3: #94a3b8;
+  --border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #64748b;
+  --accent: #f59e0b;
+  --accent2: #fbbf24;
+  --accent-fg: #ffffff;
+  --danger: #ef4444;
+  --shadow: 0 8px 32px rgba(0,0,0,0.1);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+}
+
 html, body {
   height: 100%;
   overflow: hidden;
@@ -156,9 +175,7 @@ html, body {
   gap: 12px;
   height: 52px;
   padding: 0 24px;
-  background: rgba(18, 18, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   -webkit-app-region: drag;
@@ -640,8 +657,6 @@ html, body {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -744,9 +759,7 @@ html, body {
 /* ========== CONTEXT MENU ========== */
 #ctx-menu {
   position: fixed;
-  background: rgba(24, 24, 27, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);

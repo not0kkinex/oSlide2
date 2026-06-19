@@ -18,12 +18,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(24, 24, 27, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid #3f3f46;
-  color: #fafafa;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
   animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 13px;
   font-weight: 500;

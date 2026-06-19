@@ -24,6 +24,24 @@
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+[data-active-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --bg-input: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-default: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --text-hint: #94a3b8;
+  --accent: #f59e0b;
+  --accent-fg: #ffffff;
+  --accent2: #fbbf24;
+  --danger: #ef4444;
+  --shadow: 0 8px 32px rgba(0,0,0,0.1);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+}
+
 html, body {
   height: 100%;
   overflow: hidden;
@@ -45,9 +63,7 @@ html, body {
   align-items: center;
   height: 48px;
   padding: 0 12px;
-  background: rgba(18, 18, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
   -webkit-app-region: drag;
   flex-shrink: 0;
@@ -231,9 +247,7 @@ html, body {
 #sidebar {
   width: 180px;
   min-width: 180px;
-  background: rgba(18, 18, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-surface);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
@@ -630,9 +644,7 @@ html, body {
 #panel {
   width: 240px;
   min-width: 240px;
-  background: rgba(18, 18, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-surface);
   border-left: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
