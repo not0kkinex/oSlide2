@@ -47,13 +47,65 @@ function addChart() {
 function openChartDialog(el) {
   const overlay = document.getElementById('chart-dialog-overlay')
   if (!overlay) return
-  const cd = el.chartData || { labels: ['A','B','C'], datasets: [{ label: I18n.t('element.chart'), data: [10,20,30], backgroundColor: ['#ffd700','#ff6b6b','#4ecdc4'] }] }
-  const ds = cd.datasets?.[0] || { label: I18n.t('element.chart'), data: [10,20,30] }
+  const cd = el.chartData || { labels: ['A','B','C'], datasets: [{ label: I18n.t('element.chart'), data: [10,20,30], backgroundColor: ['#f59e0b','#ec4899','#14b8a6'] }] }
+  const ds = cd.datasets?.[0] || { label: I18n.t('element.chart'), data: [10,20,30], backgroundColor: ['#f59e0b','#ec4899','#14b8a6'] }
+  
   document.getElementById('chart-type-select').value = el.chartType || 'bar'
-  document.getElementById('chart-labels-input').value = (cd.labels || []).join(', ')
-  document.getElementById('chart-data-input').value = (ds.data || []).join(', ')
   document.getElementById('chart-dataset-label').value = ds.label || ''
-  document.getElementById('chart-colors-input').value = (ds.backgroundColor || []).join(', ')
+  
+  const rowsContainer = document.getElementById('chart-data-rows')
+  rowsContainer.innerHTML = ''
+  
+  const palette = ['#f59e0b', '#ec4899', '#14b8a6', '#06b6d4', '#8b5cf6', '#eab308', '#f43f5e', '#10b981']
+  
+  function addRow(label, value, color) {
+    const row = document.createElement('div')
+    row.className = 'chart-row'
+    
+    const lInput = document.createElement('input')
+    lInput.type = 'text'
+    lInput.className = 'chart-row-label'
+    lInput.value = label || ''
+    lInput.placeholder = 'Etiket'
+    
+    const vInput = document.createElement('input')
+    vInput.type = 'number'
+    vInput.className = 'chart-row-value'
+    vInput.value = value !== undefined ? value : ''
+    vInput.placeholder = 'Değer'
+    
+    const cInput = document.createElement('input')
+    cInput.type = 'color'
+    cInput.className = 'chart-row-color'
+    cInput.value = color || palette[rowsContainer.children.length % palette.length]
+    
+    const delBtn = document.createElement('button')
+    delBtn.className = 'chart-row-delete'
+    delBtn.innerHTML = '<i data-lucide="trash-2"></i>'
+    delBtn.onclick = () => { row.remove(); if(rowsContainer.children.length === 0) addRow('','','') }
+    
+    row.appendChild(lInput)
+    row.appendChild(vInput)
+    row.appendChild(cInput)
+    row.appendChild(delBtn)
+    
+    rowsContainer.appendChild(row)
+    if (window.lucide) lucide.createIcons({root: row})
+  }
+
+  const count = Math.max(cd.labels?.length || 0, ds.data?.length || 0)
+  if (count === 0) {
+    addRow('A', 10, palette[0])
+  } else {
+    for (let i = 0; i < count; i++) {
+      addRow(cd.labels?.[i] || String(i+1), ds.data?.[i] || 0, ds.backgroundColor?.[i] || palette[i % palette.length])
+    }
+  }
+
+  const addBtn = document.getElementById('add-chart-row-btn')
+  const handleAdd = () => addRow('', '', '')
+  addBtn.addEventListener('click', handleAdd)
+
   overlay.classList.remove('hidden')
 
   const apply = document.getElementById('chart-dialog-apply')
@@ -61,15 +113,32 @@ function openChartDialog(el) {
   const cancel = document.getElementById('chart-dialog-cancel')
 
   function applyChart() {
-    const labels = document.getElementById('chart-labels-input').value.split(',').map(s => s.trim()).filter(Boolean)
-    const data = document.getElementById('chart-data-input').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n))
+    const labels = []
+    const data = []
+    const colors = []
+    
+    Array.from(rowsContainer.children).forEach(row => {
+      const inputs = row.querySelectorAll('input')
+      labels.push(inputs[0].value.trim() || 'Adsız')
+      const val = parseFloat(inputs[1].value)
+      data.push(isNaN(val) ? 0 : val)
+      colors.push(inputs[2].value)
+    })
+
     const label = document.getElementById('chart-dataset-label').value.trim() || I18n.t('element.chart')
-    const colors = document.getElementById('chart-colors-input').value.split(',').map(s => s.trim()).filter(Boolean)
     const chartType = document.getElementById('chart-type-select').value
-    const bgColors = colors.length >= data.length ? colors : ['#ffd700','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#a29bfe','#fd79a8','#6c5ce7','#00b4d9'].slice(0, data.length || 1)
+    
     const chartData = {
-      labels: labels.length === data.length ? labels : data.map((_, i) => String(i + 1)),
-      datasets: [{ label, data, backgroundColor: chartType === 'line' ? bgColors[0] : bgColors, borderColor: chartType === 'line' ? bgColors[0] : bgColors, borderWidth: 1, tension: 0.3, fill: chartType === 'line' }]
+      labels: labels,
+      datasets: [{ 
+        label, 
+        data, 
+        backgroundColor: chartType === 'line' ? colors[0] : colors, 
+        borderColor: chartType === 'line' ? colors[0] : colors, 
+        borderWidth: 1, 
+        tension: 0.3, 
+        fill: chartType === 'line' 
+      }]
     }
     save()
     const e = selEl()
@@ -87,6 +156,7 @@ function openChartDialog(el) {
     apply.removeEventListener('click', applyChart)
     close.removeEventListener('click', cleanup)
     cancel.removeEventListener('click', cleanup)
+    addBtn.removeEventListener('click', handleAdd)
     overlay.removeEventListener('click', onClickOutside)
   }
 

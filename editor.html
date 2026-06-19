@@ -435,7 +435,7 @@
         <span data-i18n="panel.chartEdit">Grafik Verisini Düzenle</span>
         <button id="chart-dialog-close"><i data-lucide="x"></i></button>
       </div>
-      <div class="chart-dialog-body">
+      <div class="chart-dialog-body" style="max-height:60vh;overflow-y:auto;padding-right:8px;">
         <div class="form-group">
           <label data-i18n="panel.chartType">Grafik Türü</label>
           <select id="chart-type-select">
@@ -447,22 +447,24 @@
             <option value="radar">Radar</option>
           </select>
         </div>
-        <div class="form-group">
-          <label data-i18n="panel.chartLabels">Etiketler (virgülle ayır)</label>
-          <input type="text" id="chart-labels-input" placeholder="A, B, C">
-        </div>
-        <div class="form-group">
-          <label data-i18n="panel.chartData">Veri (virgülle ayır)</label>
-          <input type="text" id="chart-data-input" placeholder="10, 20, 30">
-        </div>
         <div class="form-group" id="chart-label-input-group">
           <label data-i18n="panel.chart">Dataset Adı</label>
           <input type="text" id="chart-dataset-label" placeholder="Veri">
         </div>
-        <div class="form-group" id="chart-colors-group">
-          <label data-i18n="panel.chartColors">Renkler (virgülle ayır, hex)</label>
-          <input type="text" id="chart-colors-input" placeholder="#ffd700, #ff6b6b, #4ecdc4">
+        
+        <div class="chart-rows-header">
+          <label style="flex:2">Etiket</label>
+          <label style="flex:1">Değer</label>
+          <label style="width:40px">Renk</label>
+          <label style="width:32px"></label>
         </div>
+        <div id="chart-data-rows">
+          <!-- Rows will be injected here dynamically -->
+        </div>
+        <button id="add-chart-row-btn" class="btn-secondary" style="width:100%;margin-top:12px">
+          <i data-lucide="plus"></i> Veri Ekle
+        </button>
+        
         <div style="margin-top:8px;font-size:12px;color:var(--text-muted)" id="chart-preview-info"></div>
       </div>
       <div class="dialog-foot">
