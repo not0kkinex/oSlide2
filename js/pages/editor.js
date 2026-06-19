@@ -748,3 +748,54 @@ window.applyTemplate = applyTemplate;
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
+
+/* ── Micro-interactions ───────────────────────────────────── */
+
+function addRipple(e) {
+  const btn = e.currentTarget
+  const existing = btn.querySelector('.ripple-wave')
+  if (existing) existing.remove()
+  const rect = btn.getBoundingClientRect()
+  const size = Math.max(rect.width, rect.height) * 2
+  const x = e.clientX - rect.left - size / 2
+  const y = e.clientY - rect.top - size / 2
+  const wave = document.createElement('span')
+  wave.className = 'ripple-wave'
+  wave.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`
+  btn.appendChild(wave)
+  wave.addEventListener('animationend', () => wave.remove())
+}
+
+function initRipple() {
+  document.querySelectorAll('.tb-btn, .btn-primary, .btn-secondary, #add-slide-btn, .ctx-item').forEach(btn => {
+    if (btn.dataset.ripple) return
+    btn.dataset.ripple = '1'
+    btn.addEventListener('click', addRipple)
+  })
+}
+
+function staggerSlides() {
+  document.querySelectorAll('.slide-thumb').forEach((el, i) => {
+    el.style.animationDelay = `${i * 0.04}s`
+    el.style.animationName = 'none'
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.style.animationName = ''
+      })
+    })
+  })
+}
+
+const _origRenderAll = window.renderAll
+window.renderAll = function(...args) {
+  if (_origRenderAll) _origRenderAll(...args)
+  requestAnimationFrame(() => {
+    initRipple()
+    staggerSlides()
+  })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initRipple, 400)
+})
+

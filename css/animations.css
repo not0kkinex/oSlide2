@@ -587,6 +587,58 @@
 }
 
 /* ──────────────────────────────────────────────
+   RIPPLE EFFECT
+   ────────────────────────────────────────────── */
+
+@keyframes rippleWave {
+  from { transform: scale(0); opacity: 0.35; }
+  to   { transform: scale(1); opacity: 0; }
+}
+
+.ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  pointer-events: none;
+  animation: rippleWave 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: center;
+  z-index: 0;
+}
+
+[data-active-theme="light"] .ripple-wave {
+  background: rgba(0,0,0,0.1);
+}
+
+/* ──────────────────────────────────────────────
+   CANVAS ELEMENT — New element flash
+   ────────────────────────────────────────────── */
+
+@keyframes elementFlash {
+  0%   { outline-color: rgba(245,158,11,0.9); outline-offset: 0px; }
+  50%  { outline-color: rgba(245,158,11,0.4); outline-offset: 4px; }
+  100% { outline-color: transparent; outline-offset: 0px; }
+}
+
+.pe.new-flash {
+  animation: elementFlash 0.5s ease forwards;
+  outline: 2px solid transparent;
+}
+
+/* ──────────────────────────────────────────────
+   HOME — New project button hover
+   ────────────────────────────────────────────── */
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(4px); }
+}
+
+.btn-new-project:hover svg,
+.new-project-btn:hover svg {
+  animation: arrowBounce 0.5s ease infinite;
+}
+
+/* ──────────────────────────────────────────────
    REDUCE MOTION — Respect user preference
    ────────────────────────────────────────────── */
 

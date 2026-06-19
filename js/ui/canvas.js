@@ -167,15 +167,6 @@
       updateToolbar()
     }
 
-    if ((e.ctrlKey || e.metaKey) && el.classList.contains('text-el')) {
-      e.preventDefault()
-      startDrag(el, e)
-      return
-    }
-
-    if (el.classList.contains('text-el') && el.contentEditable === 'true' && e.target === el) {
-      return;
-    }
     startDrag(el, e);
   }
 
@@ -330,6 +321,7 @@
       save();
       updEl(id, { content });
     }
+    d.contentEditable = false;
     editing = false;
   }
 
@@ -432,6 +424,13 @@
       sc.addEventListener('contextmenu', onCtxMenu);
       sc.addEventListener('drop', onDrop);
       sc.addEventListener('dragover', e => e.preventDefault());
+      sc.addEventListener('dblclick', (e) => {
+        const el = e.target.closest('.canvas-el.text-el');
+        if (!el) return;
+        if (e.target.closest('.rh')) return;
+        el.contentEditable = true;
+        el.focus();
+      });
     }
     const ctxMenu = document.getElementById('editor-ctx-menu');
     if (ctxMenu) {

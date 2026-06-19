@@ -90,7 +90,6 @@ function renderEl(d, el) {
   switch (el.type) {
     case 'title':
     case 'text':
-      d.contentEditable = true;
       d.textContent = el.content || '';
       applyTextStyle(d, el);
       break;
